@@ -2,7 +2,11 @@
 #define ROAD_HPP
 
 #include "Path.hpp"
-#include "Vehicle.hpp"
+
+namespace trafficsimulation::model
+{
+
+class Vehicle;
 
 enum class RoadCondition
 {
@@ -16,19 +20,22 @@ enum class RoadCondition
 class Road : public Path
 {
 public:
-    Road(const uint32_t pathId, const uint32_t length_, const Point startPoint,
+    Road(const uint32_t pathId, const uint32_t length, const Point startPoint,
         const Point endPoint, const std::shared_ptr<Junction> endJunction,
         const RoadCondition roadCondition, const uint32_t speedLimit);
     ~Road();
 
     RoadCondition getRoadCondition() const;
     uint32_t getSpeedLimit() const;
+    const std::shared_ptr<Vehicle> getLastVehicle() const;
     void addVehicle(std::shared_ptr<Vehicle> newLastVehicle);
 
 private:
     const RoadCondition roadCondition_;
     const uint32_t speedLimit_;
-    const std::shared_ptr<Vehicle> lastVehicle_;
+    std::weak_ptr<Vehicle> lastVehicle_;
 };
+
+} // trafficsimulation::model
 
 #endif // ROAD_HPP

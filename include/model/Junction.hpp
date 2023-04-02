@@ -1,3 +1,7 @@
+/*!
+ *
+ */
+
 #ifndef JUNCTION_HPP
 #define JUNCTION_HPP
 
@@ -5,62 +9,85 @@
 #include <memory>
 #include <vector>
 
-#include "Path.hpp"
+#include <QObject>
+
 #include "Point.hpp"
-#include "Road.hpp"
+
+namespace trafficsimulation::interface{ class PointPainter; }
+
+namespace trafficsimulation::model
+{
+
+class Path;
+class Road;
 
 /*!
  * \brief The Junction class
  */
-class Junction
+class Junction : public QObject
 {
+    Q_OBJECT
+
 public:
     /*!
-     * \brief Junction
-     * \param junctionId
-     * \param position
+     * Constructor
+     * \param junctionId - id of conctructed Junction
+     * \param position - position of constructed Junction
+     *
+     * Starts timer for light change
      */
     Junction(const uint32_t junctionId, const Point position);
     /*!
-     * \brief Junction
-     * \param junctionId
-     * \param position
-     * \param pathWithGreenLightId
+     * Constructor for temporary Junction (for path that cross other Junction)
+     * \param junctionId - id of conctructed Junction
+     * \param position - position of constructed Junction
+     * \param pathWithGreenLightId - path which has green light
      */
     Junction(const uint32_t junctionId, const Point position, const uint32_t pathWithGreenLightId);
     ~Junction();
 
     uint32_t getId() const;
     Point getPosition() const;
+    uint32_t getSpeedLimit() const;
     bool isGreenLight(const uint32_t pathId) const;
     const std::vector<std::shared_ptr<Road>>& getOutgoingRoads() const;
     const std::vector<std::shared_ptr<Path>>& getOutgoingPavements() const;
+    const std::shared_ptr<Road> getFastestRoad(const uint32_t destinationId);
+    const std::shared_ptr<Path> getFastestPavement(const uint32_t destinationId);
 
-    template<class T>
-    const std::shared_ptr<T>getFastestRoute(const uint32_t destinationId);
-
-    std::shared_ptr<Road> createTemporaryRoad(const Point startPoint,
-        const std::shared_ptr<Road> oldRoad) const;
-    std::shared_ptr<Path> createTemporaryPavement(const Point startPoint,
-        const std::shared_ptr<Path> oldPavement) const;
-
-    void addIncomingRoadId(const uint32_t);
+    void addIncomingRoadId(const uint32_t roadId);
     void addOutgoingRoad(const std::shared_ptr<Road> newRoad);
     void addOutgoingPavement(const std::shared_ptr<Path> newPavement);
     void setFastestRoute(const uint32_t destinationId,
-        const std::pair<std::shared_ptr<Road>, std::shared_ptr<Path>> bestPath);
+        const std::pair<std::shared_ptr<Road>, std::shared_ptr<Path>> bestPaths);
+
+    std::shared_ptr<Road> createTemporaryRoad(const Point startPoint,
+        const std::shared_ptr<Road> newRoad) const;
+    std::shared_ptr<Path> createTemporaryPavement(const Point startPoint,
+        const std::shared_ptr<Path> newPavement) const;
+
+    void setPainter(const std::shared_ptr<interface::PointPainter> painter);
+    void update();
 
 private:
     void changeLights();
 
     const uint32_t junctionId_;
     const Point position_;
-    const std::vector<uint32_t>incomingRoadPathIds_;
-    uint32_t roadWithGreenLight_;
+    const uint32_t speedLimit_;
+
+    std::vector<uint32_t> incomingRoadPathIds_;
+    uint32_t roadWithGreenIterator_;
+    bool roadGreenLight_;
     bool pavementGreenLight_;
+    bool wasLastGreenLightRoad_;
     std::vector<std::shared_ptr<Road>> outgoingRoads_;
     std::vector<std::shared_ptr<Path>> outgoingPavements_;
     std::map<uint32_t /* destinationId */, std::pair<std::shared_ptr<Road>, std::shared_ptr<Path>>> fastestRoutes_;
+
+    std::shared_ptr<interface::PointPainter> painter_;
 };
+
+} // trafficsimulation::model
 
 #endif // JUNCTION_HPP

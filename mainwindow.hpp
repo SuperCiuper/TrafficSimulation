@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QTimer>
+#include "path.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,9 +19,14 @@ public:
     ~MainWindow();
 
 private:
+    void drawSimulation();
+
     Ui::MainWindow *ui;
-    int a;
     QGraphicsScene *scene;
     QTimer *timer;
+
+    std::vector<QPoint> junctions;
+    std::vector<std::vector<int>> connections;
+    std::vector<Path *> paths;
 };
 #endif // MAINWINDOW_HPP

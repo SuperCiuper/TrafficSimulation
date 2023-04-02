@@ -1,34 +1,42 @@
 #ifndef MOVINGOBJECT_HPP
 #define MOVINGOBJECT_HPP
 
+#include <memory>
 #include <string>
 
 #include "Point.hpp"
 
+namespace trafficsimulation::interface{ class PointPainter; }
+
+namespace trafficsimulation::model
+{
+
+constexpr uint32_t NO_DESTINATION = 0x0000;
+
 class MovingObject
 {
 public:
+    uint32_t getDestination() const;
+
+    void setDestination(const uint32_t newDestinationId);
+
+    void setPainter(std::unique_ptr<interface::PointPainter> painter);
+    void update();
+
+protected:
     MovingObject();
     virtual ~MovingObject();
 
-    const std::string& getColorHex() const;
-    Point getPosition() const;
-    uint32_t getDestination() const;
-
-    void setDestination(const uint32_t newDestination);
-
     virtual void move() = 0;
-
-protected:
-    virtual void selectNewPath() = 0;
 
     Point position_;
     uint32_t destinationId_;
     uint32_t distanceTravelled_;
-    uint32_t distanceToJunction_;
 
 private:
-    const std::string colorHex_;
+    std::unique_ptr<interface::PointPainter> painter_;
 };
+
+} // trafficsimulation::model
 
 #endif // MOVINGOBJECT_HPP

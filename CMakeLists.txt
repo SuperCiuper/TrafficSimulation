@@ -20,6 +20,9 @@ set(PROJECT_SOURCES
     path.cpp
     mainwindow.ui
 
+    include/interface/LinePainter.hpp
+    include/interface/PointPainter.hpp
+
     include/model/Driver.hpp
     include/model/Junction.hpp
     include/model/MovingObject.hpp
@@ -29,6 +32,15 @@ set(PROJECT_SOURCES
     include/model/Road.hpp
     include/model/Simulation.hpp
     include/model/Vehicle.hpp
+
+    src/model/Driver.cpp
+    src/model/Junction.cpp
+    src/model/MovingObject.cpp
+    src/model/Path.cpp
+    src/model/Pedestrian.cpp
+    src/model/Road.cpp
+    src/model/Simulation.cpp
+    src/model/Vehicle.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

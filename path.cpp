@@ -29,6 +29,15 @@ QRectF Path::boundingRect() const
 
 void Path::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    if(color_ == defaultColor_)
+    {
+        color_ = Qt::red;
+    }
+    else
+    {
+        color_ = defaultColor_;
+    }
+
     qInfo() << startPoint_.x() << "   " << endPoint_.x();
 
     painter->setPen(color_);
@@ -53,15 +62,6 @@ void Path::advance(int phase)
     if(!phase)
     {
         return;
-    }
-
-    if(color_ == defaultColor_)
-    {
-        color_ = Qt::red;
-    }
-    else
-    {
-        color_ = defaultColor_;
     }
     update();
 }

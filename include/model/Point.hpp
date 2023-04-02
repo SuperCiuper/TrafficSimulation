@@ -3,10 +3,20 @@
 
 #include<cstdint>
 
+namespace trafficsimulation::model
+{
+
 struct Point
 {
-    uint32_t x_;
-    uint32_t y_;
+    int16_t x;
+    int16_t y;
 };
+
+inline bool operator==(const Point& lhs, const Point& rhs)
+{
+    return lhs.x == rhs.x && lhs.y == rhs.y;
+}
+
+} // trafficsimulation::model
 
 #endif // POINT_HPP

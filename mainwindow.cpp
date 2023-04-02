@@ -1,12 +1,15 @@
 #include "mainwindow.hpp"
 #include "./ui_mainwindow.h"
 #include "qgraphicsitem.h"
-#include "path.hpp"
+
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , a{0}
+    , junctions{}
+    , connections{{1, 2, 4}, {0, 3, 4}, {0, 3, 4}, {1, 2, 4}, {0, 1, 2, 3}}
+    , paths{}
 {
     ui->setupUi(this);
 
@@ -24,15 +27,11 @@ MainWindow::MainWindow(QWidget *parent)
     const auto junctionRadius = qreal{36};
     const auto roadOffset = int{4};
     auto pen = QPen(Qt::blue, 1, Qt::SolidLine);
-    auto junctions = std::vector<QPoint>{};
     junctions.push_back(QPoint(20, 20));
     junctions.push_back(QPoint(20, 800));
     junctions.push_back(QPoint(1280, 20));
     junctions.push_back(QPoint(1280, 800));
     junctions.push_back(QPoint(650, 410));
-
-    auto connections = std::vector<std::vector<int>>{{1, 2, 4}, {0, 3, 4}, {0, 3, 4}, {1, 2, 4}, {0, 1, 2, 3}};
-    auto paths = std::vector<Path *>{};
 
     for(auto i = 0; i < std::size(connections); i++)
     {
@@ -50,11 +49,12 @@ MainWindow::MainWindow(QWidget *parent)
     pen.setColor(Qt::black);
     for(const auto& point : junctions)
     {
-        scene->addEllipse(point.x() - junctionRadius/2, point.y() - junctionRadius/2, junctionRadius, junctionRadius, pen, QBrush(Qt::green));
+        scene->addEllipse(point.x() - junctionRadius/2, point.y() - junctionRadius/2,
+            junctionRadius, junctionRadius, pen, QBrush(Qt::green));
     }
 
     auto timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), scene, SLOT(advance()));
+    connect(timer, &QTimer::timeout, this, &MainWindow::drawSimulation);
     timer->start(500);
 }
 
@@ -62,3 +62,14 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::drawSimulation()
+{
+    std::cout << "drawing XD" << std::endl;
+    for(const auto& item : paths)
+    {
+        item->update();
+    }
+};
+
+
