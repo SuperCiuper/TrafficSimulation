@@ -1,12 +1,12 @@
-#include "../../include/model/Road.hpp"
+#include "../include/model/Road.hpp"
 
-#include "../../include/model/Vehicle.hpp"
+#include "../include/model/Vehicle.hpp"
 
 namespace trafficsimulation::model
 {
 
-Road::Road(const uint32_t pathId, const uint32_t length, const Point startPoint,
-    const Point endPoint, const std::shared_ptr<Junction> endJunction,
+Road::Road(const uint32_t pathId, const uint32_t length, const common::Point startPoint,
+    const common::Point endPoint, const std::shared_ptr<Junction> endJunction,
     const RoadCondition roadCondition, const uint32_t speedLimit)
     : Path{pathId, length, startPoint, endPoint, endJunction}
     , roadCondition_{roadCondition}

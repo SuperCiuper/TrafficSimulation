@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "Point.hpp"
+#include "../common/Point.hpp"
 
 namespace trafficsimulation::interface{ class LinePainter; }
 
@@ -15,16 +15,16 @@ class Junction;
 class Path
 {
 public:
-    Path(const uint32_t pathId, const uint32_t length, const Point startPoint,
-        const Point endPoint, const std::shared_ptr<Junction> endJunction);
+    Path(const uint32_t pathId, const uint32_t length, const common::Point startPoint,
+        const common::Point endPoint, const std::shared_ptr<Junction> endJunction);
     virtual ~Path();
 
     uint32_t getPathId() const;
     uint32_t getLength() const;
-    Point getStartPoint() const;
+    common::Point getStartPoint() const;
     const std::shared_ptr<Junction> getJunction() const;
 
-    Point calculateNewPosition(uint32_t distanceTravelled) const;
+    common::Point calculateNewPosition(uint32_t distanceTravelled) const;
 
     void setPainter(const std::shared_ptr<interface::LinePainter> painter);
     void update();
@@ -32,9 +32,9 @@ public:
 private:
     const uint32_t pathId_;
     const uint32_t length_;
-    const Point startPoint_;
-    const Point endPoint_;
-    const Point shiftOfStartPoint_;
+    const common::Point startPoint_;
+    const common::Point endPoint_;
+    const common::Point shiftOfStartPoint_;
     const std::weak_ptr<Junction> endJunction_;
 
     std::shared_ptr<interface::LinePainter> painter_;

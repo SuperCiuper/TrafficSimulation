@@ -5,7 +5,7 @@
 #include <QGraphicsItem>
 
 #include "../interface/PointPainter.hpp"
-#include "../model/Point.hpp"
+#include "../common/Point.hpp"
 
 namespace trafficsimulation::view
 {
@@ -15,15 +15,15 @@ class PointPainter : public interface::PointPainter, public QGraphicsItem
 public:
     virtual ~PointPainter();
 
-    void setPoint(const model::Point point, const bool highlight = false);
-    void paint();
+    void setPoint(const common::Point point, const bool highlight = false) override;
+    void paint() override;
 
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
 
 protected:
     PointPainter();
 
-    model::Point point_;
+    common::Point point_;
     bool highlight_;
 };
 
@@ -33,7 +33,7 @@ public:
     JunctionPainter();
     ~JunctionPainter();
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
 
 class DriverPainter : public PointPainter
@@ -42,7 +42,7 @@ public:
     DriverPainter();
     ~DriverPainter();
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 private:
     QColor color_;
@@ -54,7 +54,7 @@ public:
     PedestrianPainter();
     ~PedestrianPainter();
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 private:
     QColor color_;

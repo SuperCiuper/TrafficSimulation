@@ -45,37 +45,59 @@
      </rect>
     </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>1340</x>
-      <y>370</y>
-      <width>171</width>
-      <height>161</height>
+      <x>1350</x>
+      <y>310</y>
+      <width>151</width>
+      <height>211</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QVBoxLayout" name="verticalButtons">
      <item>
-      <widget class="QComboBox" name="pathSelectorComboBox"/>
+      <layout class="QVBoxLayout" name="addButtons">
+       <item>
+        <widget class="QPushButton" name="addJunctionButton">
+         <property name="text">
+          <string>Add Junction</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addPavementButton">
+         <property name="text">
+          <string>Add Pavement</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addRoadButton">
+         <property name="text">
+          <string>Add Road</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addDriverButton">
+         <property name="text">
+          <string>Add Driver</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addPedestrianButton">
+         <property name="text">
+          <string>Add Pedestrian</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="selectPathPushButton">
+      <widget class="QPushButton" name="startResetButton">
        <property name="text">
-        <string>Select</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton_2">
-       <property name="text">
-        <string>Run / Pause Simulation</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton_3">
-       <property name="text">
-        <string>Restart</string>
+        <string>Start</string>
        </property>
       </widget>
      </item>

@@ -1,13 +1,13 @@
-#include "../../include/model/Junction.hpp"
+#include "../include/model/Junction.hpp"
 
 #include <algorithm>
 #include <cstdlib>
 
 #include <QTimer>
 
-#include "../../include/interface/PointPainter.hpp"
-#include "../../include/model/Path.hpp"
-#include "../../include/model/Road.hpp"
+#include "../include/interface/PointPainter.hpp"
+#include "../include/model/Path.hpp"
+#include "../include/model/Road.hpp"
 
 namespace trafficsimulation::model
 {
@@ -18,7 +18,7 @@ constexpr uint32_t DUMMY_ID = 0xFFFF;
 constexpr uint32_t TEMPORARY_PATH_LENGTH = 20000;
 constexpr RoadCondition TEMPORARY_ROAD_CONDITION = RoadCondition::SomePotHoles;
 
-Junction::Junction(const uint32_t junctionId, const Point position)
+Junction::Junction(const uint32_t junctionId, const common::Point position)
     : junctionId_{junctionId}
     , position_ {position}
     , speedLimit_{300}
@@ -44,7 +44,7 @@ Junction::Junction(const uint32_t junctionId, const Point position)
     });
 }
 
-Junction::Junction(const uint32_t junctionId, const Point position,
+Junction::Junction(const uint32_t junctionId, const common::Point position,
     const uint32_t pathWithGreenLightId)
     : junctionId_{junctionId}
     , position_ {position}
@@ -67,7 +67,7 @@ uint32_t Junction::getId() const
     return junctionId_;
 }
 
-Point Junction::getPosition() const
+common::Point Junction::getPosition() const
 {
     return position_;
 }
@@ -141,7 +141,7 @@ void Junction::setFastestRoute(const uint32_t destinationId,
     fastestRoutes_.emplace(destinationId, bestPaths);
 }
 
-std::shared_ptr<Road> Junction::createTemporaryRoad(const Point startPoint,
+std::shared_ptr<Road> Junction::createTemporaryRoad(const common::Point startPoint,
     const std::shared_ptr<Road> newRoad) const
 {
     auto tempJunction = std::make_shared<Junction>(DUMMY_ID,
@@ -152,7 +152,7 @@ std::shared_ptr<Road> Junction::createTemporaryRoad(const Point startPoint,
         TEMPORARY_ROAD_CONDITION, speedLimit_);
 }
 
-std::shared_ptr<Path> Junction::createTemporaryPavement(const Point startPoint,
+std::shared_ptr<Path> Junction::createTemporaryPavement(const common::Point startPoint,
     const std::shared_ptr<Path> newPavement) const
 {
     auto tempJunction = std::make_shared<Junction>(DUMMY_ID,
@@ -193,9 +193,9 @@ void Junction::changeLights()
     pavementGreenLight_ = true;
 }
 
-void Junction::setPainter(const std::shared_ptr<interface::PointPainter> painter)
+void Junction::setPainter(std::unique_ptr<interface::PointPainter> painter)
 {
-    painter_ = painter;
+    painter_ = std::move(painter);
     painter_->setPoint(position_);
 }
 

@@ -1,12 +1,12 @@
-#include "../../include/model/Driver.hpp"
+#include "../include/model/Driver.hpp"
 
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
 
-#include "../../include/model/Junction.hpp"
-#include "../../include/model/Road.hpp"
-#include "../../include/model/Vehicle.hpp"
+#include "../include/model/Junction.hpp"
+#include "../include/model/Road.hpp"
+#include "../include/model/Vehicle.hpp"
 
 namespace trafficsimulation::model
 {

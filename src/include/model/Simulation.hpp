@@ -8,6 +8,8 @@
 #include <QObject>
 #include <QTimer>
 
+namespace trafficsimulation::common{ class Point; }
+
 namespace trafficsimulation::interface
 {
 class LinePainter;
@@ -21,7 +23,6 @@ class Driver;
 class Junction;
 class Path;
 class Pedestrian;
-class Point;
 class Road;
 enum class RoadCondition;
 class Vehicle;
@@ -34,7 +35,7 @@ public:
     Simulation();
     ~Simulation();
 
-    void setBasePrinters(const std::shared_ptr<interface::PointPainter> junctionPainter,
+    void setBasePrinters(std::unique_ptr<interface::PointPainter> junctionPainter,
         const std::shared_ptr<interface::LinePainter> roadPainter,
         const std::shared_ptr<interface::LinePainter> pavementPainter);
     void startSimulation();
@@ -44,7 +45,7 @@ public:
     const std::vector<std::shared_ptr<Driver>>& getDrivers() const;
     const std::vector<std::shared_ptr<Pedestrian>>& getPedestrians() const;
 
-    void addJunction(const Point position, const std::shared_ptr<interface::PointPainter> painter);
+    void addJunction(const common::Point position, std::unique_ptr<interface::PointPainter> painter);
     void addRoad(const std::shared_ptr<Junction> startJunction,
         const std::shared_ptr<Junction> endJunction, const uint32_t length,
         const RoadCondition roadCondition, const uint32_t speedLimit,
@@ -71,7 +72,7 @@ private:
     void updateObjects();
 
     void calculateFastestRoutes();
-    void calculateOffset(Point& startPoint, Point& endPoint, uint32_t offset);
+    void calculateOffset(common::Point& startPoint, common::Point& endPoint, uint32_t offset);
 
     void generateBaseSimulation();
     std::unique_ptr<Vehicle> generateRandomVehicle() const;

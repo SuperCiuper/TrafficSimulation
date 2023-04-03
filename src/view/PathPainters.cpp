@@ -1,4 +1,4 @@
-#include "../../include/view/PathPainters.hpp"
+#include "../include/view/PathPainters.hpp"
 
 #include <cstdlib>
 
@@ -9,14 +9,14 @@ namespace trafficsimulation::view
 {
 
 PathPainter::PathPainter()
-    : startPoint_{model::Point{-10, -10}}
-    , endPoint_{model::Point{-10, -10}}
+    : startPoint_{common::Point{-10, -10}}
+    , endPoint_{common::Point{-10, -10}}
 {
 }
 
 PathPainter::~PathPainter() = default;
 
-void PathPainter::setPoints(const model::Point startPoint, const model::Point endPoint)
+void PathPainter::setPoints(const common::Point startPoint, const common::Point endPoint)
 {
     startPoint_ = startPoint;
     endPoint_ = endPoint;

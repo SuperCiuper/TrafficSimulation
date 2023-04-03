@@ -1,4 +1,4 @@
-#include "../../include/view/PointPainters.hpp"
+#include "../include/view/PointPainters.hpp"
 
 #include <cstdlib>
 
@@ -44,14 +44,14 @@ QColor randomColor()
 }
 
 PointPainter::PointPainter()
-    : point_{model::Point{-10, -10}}
+    : point_{common::Point{-10, -10}}
     , highlight_{false}
 {
 }
 
 PointPainter::~PointPainter() = default;
 
-void PointPainter::setPoint(const model::Point point, const bool highlight)
+void PointPainter::setPoint(const common::Point point, const bool highlight)
 {
     point_ = point;
     highlight_ = highlight;

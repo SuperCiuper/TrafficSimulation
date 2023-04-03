@@ -15,27 +15,28 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 set(PROJECT_SOURCES
     main.cpp
     path.hpp
-    mainwindow.hpp
-    mainwindow.cpp
     path.cpp
-    mainwindow.ui
 
-    include/interface/LinePainter.hpp
-    include/interface/PointPainter.hpp
+    src/include/MainWindow.hpp
+    src/include/common/Point.hpp
+    src/include/controller/SimulationController.hpp
+    src/include/interface/LinePainter.hpp
+    src/include/interface/PointPainter.hpp
+    src/include/model/Driver.hpp
+    src/include/model/Junction.hpp
+    src/include/model/MovingObject.hpp
+    src/include/model/Path.hpp
+    src/include/model/Pedestrian.hpp
+    src/include/model/Road.hpp
+    src/include/model/Simulation.hpp
+    src/include/model/Vehicle.hpp
+    src/include/view/PointPainters.hpp
+    src/include/view/PathPainters.hpp
 
-    include/model/Driver.hpp
-    include/model/Junction.hpp
-    include/model/MovingObject.hpp
-    include/model/Path.hpp
-    include/model/Pedestrian.hpp
-    include/model/Point.hpp
-    include/model/Road.hpp
-    include/model/Simulation.hpp
-    include/model/Vehicle.hpp
 
-    include/view/PointPainters.hpp
-    include/view/PathPainters.hpp
-
+    src/MainWindow.cpp
+    src/mainwindow.ui
+    src/controller/SimulationController.cpp
     src/model/Driver.cpp
     src/model/Junction.cpp
     src/model/MovingObject.cpp
@@ -44,7 +45,6 @@ set(PROJECT_SOURCES
     src/model/Road.cpp
     src/model/Simulation.cpp
     src/model/Vehicle.cpp
-
     src/view/PathPainters.cpp
     src/view/PointPainters.cpp
 )

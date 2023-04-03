@@ -1,4 +1,4 @@
-#include "../../include/model/Vehicle.hpp"
+#include "../include/model/Vehicle.hpp"
 
 #include <iostream>
 

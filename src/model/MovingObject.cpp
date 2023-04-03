@@ -1,12 +1,12 @@
-#include "../../include/model/MovingObject.hpp"
+#include "../include/model/MovingObject.hpp"
 
-#include "../../include/interface/PointPainter.hpp"
+#include "../include/interface/PointPainter.hpp"
 
 namespace trafficsimulation::model
 {
 
 MovingObject::MovingObject()
-    : position_{Point{}}
+    : position_{common::Point{}}
     , destinationId_{NO_DESTINATION}
     , distanceTravelled_{0}
     , painter_{nullptr}

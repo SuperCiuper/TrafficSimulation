@@ -1,18 +1,18 @@
-#include "../../include/model/Path.hpp"
+#include "../include/model/Path.hpp"
 
-#include "../../include/interface/LinePainter.hpp"
-#include "../../include/model/Junction.hpp"
+#include "../include/interface/LinePainter.hpp"
+#include "../include/model/Junction.hpp"
 
 namespace trafficsimulation::model
 {
 
-Path::Path(const uint32_t pathId, const uint32_t length, const Point startPoint,
-    const Point endPoint, const std::shared_ptr<Junction> endJunction)
+Path::Path(const uint32_t pathId, const uint32_t length, const common::Point startPoint,
+    const common::Point endPoint, const std::shared_ptr<Junction> endJunction)
     : pathId_{pathId}
     , length_{length}
     , startPoint_{startPoint}
     , endPoint_{endPoint}
-    , shiftOfStartPoint_{Point{static_cast<int16_t>(startPoint_.x - endPoint.x),
+    , shiftOfStartPoint_{common::Point{static_cast<int16_t>(startPoint_.x - endPoint.x),
         static_cast<int16_t>(startPoint_.y - endPoint.y)}}
     , endJunction_{endJunction}
 {
@@ -30,7 +30,7 @@ uint32_t Path::getLength() const
     return length_;
 }
 
-Point Path::getStartPoint() const
+common::Point Path::getStartPoint() const
 {
     return startPoint_;
 }
@@ -40,10 +40,10 @@ const std::shared_ptr<Junction> Path::getJunction() const
     return std::shared_ptr<Junction>{endJunction_};
 }
 
-Point Path::calculateNewPosition(uint32_t distanceTravelled) const
+common::Point Path::calculateNewPosition(uint32_t distanceTravelled) const
 {
     auto partTravelled = static_cast<float>(distanceTravelled / length_);
-    auto newPoint = Point{};
+    auto newPoint = common::Point{};
     newPoint.x = startPoint_.x + (shiftOfStartPoint_.x / partTravelled );
     newPoint.y = startPoint_.y + (shiftOfStartPoint_.y / partTravelled );
 

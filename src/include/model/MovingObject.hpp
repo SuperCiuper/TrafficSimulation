@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "Point.hpp"
+#include "../common/Point.hpp"
 
 namespace trafficsimulation::interface{ class PointPainter; }
 
@@ -29,7 +29,7 @@ protected:
 
     virtual void move() = 0;
 
-    Point position_;
+    common::Point position_;
     uint32_t destinationId_;
     uint32_t distanceTravelled_;
 

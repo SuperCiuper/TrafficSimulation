@@ -1,10 +1,10 @@
-#include "../../include/model/Pedestrian.hpp"
+#include "../include/model/Pedestrian.hpp"
 
 #include <cstdlib>
 #include <ctime>
 
-#include "../../include/model/Junction.hpp"
-#include "../../include/model/Path.hpp"
+#include "../include/model/Junction.hpp"
+#include "../include/model/Path.hpp"
 
 namespace trafficsimulation::model
 {
