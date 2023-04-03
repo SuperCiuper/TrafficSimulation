@@ -41,7 +41,8 @@ void MovingObject::update()
         // add log
         return;
     }
-    painter_->draw(position_);
+    painter_->setPoint(position_);
+    painter_->paint();
 }
 
 } // trafficsimulation::model

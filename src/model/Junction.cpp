@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <cstdlib>
-#include <ctime>
 
 #include <QTimer>
 
@@ -197,6 +196,7 @@ void Junction::changeLights()
 void Junction::setPainter(const std::shared_ptr<interface::PointPainter> painter)
 {
     painter_ = painter;
+    painter_->setPoint(position_);
 }
 
 void Junction::update()
@@ -206,7 +206,7 @@ void Junction::update()
         // add log
         return;
     }
-    painter_->draw(position_);
+    painter_->paint();
 }
 
 } // trafficsimulation::model

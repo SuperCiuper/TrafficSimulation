@@ -9,11 +9,13 @@ namespace trafficsimulation::interface
 class LinePainter
 {
 public:
-    virtual void draw(const model::Point startPoint, const model::Point endPoint) = 0;
+    virtual ~LinePainter() = default;
+
+    virtual void setPoints(const model::Point startPoint, const model::Point endPoint) = 0;
+    virtual void paint() = 0;
 
 protected:
     LinePainter() = default;
-    virtual ~LinePainter() = default;
 };
 
 } // trafficsimulation::interface

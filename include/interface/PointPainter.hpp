@@ -9,11 +9,13 @@ namespace trafficsimulation::interface
 class PointPainter
 {
 public:
-    virtual void draw(const model::Point position) = 0;
+    virtual ~PointPainter() = default;
+
+    virtual void setPoint(const model::Point point, const bool highlight = false) = 0;
+    virtual void paint() = 0;
 
 protected:
     PointPainter() = default;
-    virtual ~PointPainter() = default;
 };
 
 } // trafficsimulation::interface

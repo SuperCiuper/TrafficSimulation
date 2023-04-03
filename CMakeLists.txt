@@ -33,6 +33,9 @@ set(PROJECT_SOURCES
     include/model/Simulation.hpp
     include/model/Vehicle.hpp
 
+    include/view/PointPainters.hpp
+    include/view/PathPainters.hpp
+
     src/model/Driver.cpp
     src/model/Junction.cpp
     src/model/MovingObject.cpp
@@ -41,6 +44,9 @@ set(PROJECT_SOURCES
     src/model/Road.cpp
     src/model/Simulation.cpp
     src/model/Vehicle.cpp
+
+    src/view/PathPainters.cpp
+    src/view/PointPainters.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

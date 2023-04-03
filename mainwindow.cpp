@@ -71,5 +71,3 @@ void MainWindow::drawSimulation()
         item->update();
     }
 };
-
-

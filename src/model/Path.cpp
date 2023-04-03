@@ -40,11 +40,6 @@ const std::shared_ptr<Junction> Path::getJunction() const
     return std::shared_ptr<Junction>{endJunction_};
 }
 
-void Path::setPainter(const std::shared_ptr<interface::LinePainter> painter)
-{
-    painter_ = painter;
-}
-
 Point Path::calculateNewPosition(uint32_t distanceTravelled) const
 {
     auto partTravelled = static_cast<float>(distanceTravelled / length_);
@@ -55,6 +50,12 @@ Point Path::calculateNewPosition(uint32_t distanceTravelled) const
     return newPoint;
 }
 
+void Path::setPainter(const std::shared_ptr<interface::LinePainter> painter)
+{
+    painter_ = painter;
+    painter_->setPoints(startPoint_, endPoint_);
+}
+
 void Path::update()
 {
     if(painter_ == nullptr)
@@ -62,7 +63,7 @@ void Path::update()
         // add log
         return;
     }
-    painter_->draw(startPoint_, endPoint_);
+    painter_->paint();
 }
 
 } // trafficsimulation::model
