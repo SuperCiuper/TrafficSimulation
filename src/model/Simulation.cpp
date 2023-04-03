@@ -106,7 +106,7 @@ void Simulation::addRoad(const std::shared_ptr<Junction> startJunction,
     pathId_++;
     auto startPoint = startJunction->getPosition();
     auto endPoint = endJunction->getPosition();
-    calculateOffset(startPoint, endPoint, ROADOFFSET);
+    calculatePathPoints(startPoint, endPoint, ROADOFFSET, length);
 
     auto road = std::make_shared<Road>(pathId_, length, startPoint, endPoint,
         endJunction, roadCondition, speedLimit);
@@ -121,7 +121,7 @@ void Simulation::addPavement(const std::shared_ptr<Junction> startJunction,
     pathId_++;
     auto startPoint = startJunction->getPosition();
     auto endPoint = endJunction->getPosition();
-    calculateOffset(startPoint, endPoint, PAVEMENTOFFSET);
+    calculatePathPoints(startPoint, endPoint, PAVEMENTOFFSET, length);
 
     auto pavement = std::make_shared<Path>(pathId_, length, startPoint, endPoint, endJunction);
     pavement->setPainter(painter);
@@ -201,27 +201,58 @@ void Simulation::updateObjects()
     }
 }
 
-void Simulation::calculateOffset(common::Point &startPoint, common::Point &endPoint, uint32_t offset)
+void Simulation::calculatePathPoints(common::Point &startPoint, common::Point &endPoint,
+    const uint32_t offset, const uint32_t length)
 {
+    const auto junctionPosition = endPoint;
+
     if(startPoint.y > endPoint.y)
-    {
-        startPoint.x -= offset;
-        endPoint.x -= offset;
-    }
-    else
     {
         startPoint.x += offset;
         endPoint.x += offset;
     }
+    else
+    {
+        startPoint.x -= offset;
+        endPoint.x -= offset;
+    }
 
-    if(startPoint.x < endPoint.x)
+    if(startPoint.x > endPoint.x)
     {
         startPoint.y -= offset;
         endPoint.y -= offset;
-        return;
     }
-    startPoint.y += offset;
-    endPoint.y += offset;
+    else
+    {
+        startPoint.y += offset;
+        endPoint.y += offset;
+    }
+
+    const auto junctionRadiusSquared = (JUNCTIONRADIUS - 2) * (JUNCTIONRADIUS - 2);
+    auto startPointShift = common::Point{static_cast<int16_t>(endPoint.x - startPoint.x),
+        static_cast<int16_t>(endPoint.y - startPoint.y)};
+    auto currentLength = length;
+    auto traversedLength = 0;
+
+    endPoint = startPoint;
+    while(currentLength/2 > 0)
+    {
+        currentLength /= 2;
+
+        auto changeOnX = endPoint.x - junctionPosition.x;
+        auto changeOnY = endPoint.y - junctionPosition.y;
+        if((changeOnX * changeOnX) + (changeOnY * changeOnY) > junctionRadiusSquared)
+        {
+            traversedLength += currentLength;
+        }
+        else
+        {
+            traversedLength -= currentLength;
+        }
+        auto partTravelled = static_cast<float>(traversedLength) / static_cast<float>(length);
+        endPoint.x = startPoint.x + (startPointShift.x * partTravelled);
+        endPoint.y = startPoint.y + (startPointShift.y * partTravelled);
+    }
 }
 
 void Simulation::generateBaseSimulation()
@@ -232,17 +263,17 @@ void Simulation::generateBaseSimulation()
 
     auto startPointRoad = common::Point{-200, -200};
     auto endPointRoad = common::Point{20, 20};
-    calculateOffset(startPointRoad, startPointRoad, ROADOFFSET);
+    calculatePathPoints(startPointRoad, endPointRoad, ROADOFFSET, SPAWNPATHSLENGTH);
     auto startPointPavement = common::Point{-200, -200};
     auto endPointPavement = common::Point{20, 20};
-    calculateOffset(startPointPavement, endPointPavement, PAVEMENTOFFSET);
+    calculatePathPoints(startPointPavement, endPointPavement, PAVEMENTOFFSET, SPAWNPATHSLENGTH);
 
     pathId_++;
-    spawnRoad_ =  std::make_shared<Road>(pathId_, SPAWNPATHSLENGTH, startPointRoad,
+    spawnRoad_ = std::make_shared<Road>(pathId_, SPAWNPATHSLENGTH, startPointRoad,
         endPointRoad, junction, RoadCondition::NoPotHoles, 70);
 
     pathId_++;
-    spawnPavement_ =  std::make_shared<Path>(pathId_, SPAWNPATHSLENGTH, startPointPavement,
+    spawnPavement_ = std::make_shared<Path>(pathId_, SPAWNPATHSLENGTH, startPointPavement,
         endPointPavement, junction);
 }
 

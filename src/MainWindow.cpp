@@ -1,9 +1,9 @@
 #include "include/MainWindow.hpp"
+#include "ui_mainwindow.h"
 
 #include <QGraphicsScene>
 #include <QMessageBox>
 
-#include "ui_mainwindow.h"
 #include "include/view/PathPainters.hpp"
 #include "include/view/PointPainters.hpp"
 #include "include/controller/SimulationController.hpp"
@@ -21,14 +21,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui_->graphicsView->setScene(scene_);
     ui_->graphicsView->setRenderHint(QPainter::Antialiasing);
 
-    scene_->setSceneRect(0, 0, 1300, 820);
+    scene_->setSceneRect(0, 0, SCENEWIDTH, SCENEHEIGHT);
 
     auto line1 = QLineF(scene_->sceneRect().topLeft(), scene_->sceneRect().topRight());
     auto line2 = QLineF(scene_->sceneRect().topLeft(), scene_->sceneRect().bottomLeft());
     scene_->addLine(line1);
     scene_->addLine(line2);
-
-    // simulation_->setBasePrinters()
 
     connect(ui_->addJunctionButton, &QPushButton::clicked,
         this, [this](){ controller_->addJunction(); });
@@ -48,18 +46,39 @@ MainWindow::~MainWindow()
     delete ui_;
 }
 
-std::unique_ptr<view::PointPainter> MainWindow::addJunctionPainter()
+std::unique_ptr<interface::PointPainter> MainWindow::addJunctionPainter()
 {
     auto painter = new view::JunctionPainter{};
     scene_->addItem(painter);
-    return std::unique_ptr<view::PointPainter>(painter);
+    return std::unique_ptr<interface::PointPainter>(painter);
 }
 
-std::unique_ptr<view::PathPainter> MainWindow::addRoadPainter()
+std::unique_ptr<interface::PointPainter> MainWindow::addDriverPainter()
+{
+    auto painter = new view::DriverPainter{};
+    scene_->addItem(painter);
+    return std::unique_ptr<interface::PointPainter>(painter);
+}
+
+std::unique_ptr<interface::PointPainter> MainWindow::addPedestrianPainter()
+{
+    auto painter = new view::PedestrianPainter{};
+    scene_->addItem(painter);
+    return std::unique_ptr<interface::PointPainter>(painter);
+}
+
+std::unique_ptr<interface::LinePainter> MainWindow::addRoadPainter()
 {
     auto painter = new view::RoadPainter{};
     scene_->addItem(painter);
-    return std::unique_ptr<view::PathPainter>(painter);
+    return std::unique_ptr<interface::LinePainter>(painter);
+}
+
+std::unique_ptr<interface::LinePainter> MainWindow::addPavementPainter()
+{
+    auto painter = new view::PavementPainter{};
+    scene_->addItem(painter);
+    return std::unique_ptr<interface::LinePainter>(painter);
 }
 
 } // trafficsimulation

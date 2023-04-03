@@ -25,7 +25,7 @@ public:
     void resetSimulation();
 
 private:
-    const MainWindow* mainWindow_;
+    MainWindow* mainWindow_;
     std::unique_ptr<model::Simulation> simulation_;
 };
 

@@ -14,8 +14,6 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
     main.cpp
-    path.hpp
-    path.cpp
 
     src/include/MainWindow.hpp
     src/include/common/Point.hpp
@@ -32,6 +30,9 @@ set(PROJECT_SOURCES
     src/include/model/Vehicle.hpp
     src/include/view/PointPainters.hpp
     src/include/view/PathPainters.hpp
+    src/include/view/dialogs/CreateJunctionDialog.hpp
+    src/include/view/dialogs/CreatePavementDialog.hpp
+    src/include/view/dialogs/CreateRoadDialog.hpp
 
 
     src/MainWindow.cpp
@@ -47,6 +48,12 @@ set(PROJECT_SOURCES
     src/model/Vehicle.cpp
     src/view/PathPainters.cpp
     src/view/PointPainters.cpp
+    src/view/dialogs/CreateJunctionDialog.cpp
+    src/view/dialogs/CreatePavementDialog.cpp
+    src/view/dialogs/CreateRoadDialog.cpp
+    src/view/dialogs/createjunctiondialog.ui
+    src/view/dialogs/createpavementdialog.ui
+    src/view/dialogs/createroaddialog.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

@@ -12,14 +12,17 @@ QT_END_NAMESPACE
 class QGraphicsScene;
 
 namespace trafficsimulation::controller { class SimulationController; }
-namespace trafficsimulation::view
+namespace trafficsimulation::interface
 {
 class PointPainter;
-class PathPainter;
+class LinePainter;
 }
 
 namespace trafficsimulation
 {
+
+constexpr auto SCENEWIDTH = uint32_t{1300};
+constexpr auto SCENEHEIGHT = uint32_t{820};
 
 class MainWindow : public QMainWindow
 {
@@ -30,11 +33,11 @@ public:
     ~MainWindow();
 
     // void resetScene(); not needed for now
-    std::unique_ptr<view::PointPainter> addJunctionPainter();
-    std::unique_ptr<view::PointPainter> addDriverPainter();
-    std::unique_ptr<view::PointPainter> addPedestrianPainter();
-    std::unique_ptr<view::PathPainter> addRoadPainter();
-    std::unique_ptr<view::PathPainter> addPavementPainter();
+    std::unique_ptr<interface::PointPainter> addJunctionPainter();
+    std::unique_ptr<interface::PointPainter> addDriverPainter();
+    std::unique_ptr<interface::PointPainter> addPedestrianPainter();
+    std::unique_ptr<interface::LinePainter> addRoadPainter();
+    std::unique_ptr<interface::LinePainter> addPavementPainter();
 
 private:
     Ui::MainWindow *ui_;

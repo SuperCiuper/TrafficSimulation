@@ -18,6 +18,8 @@ namespace trafficsimulation::interface{ class PointPainter; }
 namespace trafficsimulation::model
 {
 
+constexpr auto JUNCTIONRADIUS = uint32_t{18};
+
 class Path;
 class Road;
 

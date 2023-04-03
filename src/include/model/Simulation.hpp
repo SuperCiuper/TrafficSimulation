@@ -72,7 +72,8 @@ private:
     void updateObjects();
 
     void calculateFastestRoutes();
-    void calculateOffset(common::Point& startPoint, common::Point& endPoint, uint32_t offset);
+    void calculatePathPoints(common::Point& startPoint, common::Point& endPoint,
+        const uint32_t offset, const uint32_t length);
 
     void generateBaseSimulation();
     std::unique_ptr<Vehicle> generateRandomVehicle() const;

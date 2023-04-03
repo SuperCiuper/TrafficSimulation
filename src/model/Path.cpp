@@ -12,8 +12,8 @@ Path::Path(const uint32_t pathId, const uint32_t length, const common::Point sta
     , length_{length}
     , startPoint_{startPoint}
     , endPoint_{endPoint}
-    , shiftOfStartPoint_{common::Point{static_cast<int16_t>(startPoint_.x - endPoint.x),
-        static_cast<int16_t>(startPoint_.y - endPoint.y)}}
+    , shiftOfStartPoint_{common::Point{static_cast<int16_t>(endPoint_.x - startPoint_.x),
+        static_cast<int16_t>(endPoint_.y - startPoint_.y)}}
     , endJunction_{endJunction}
 {
 }
@@ -42,10 +42,10 @@ const std::shared_ptr<Junction> Path::getJunction() const
 
 common::Point Path::calculateNewPosition(uint32_t distanceTravelled) const
 {
-    auto partTravelled = static_cast<float>(distanceTravelled / length_);
+    auto partTravelled = static_cast<float>(distanceTravelled) / static_cast<float>(length_);
     auto newPoint = common::Point{};
-    newPoint.x = startPoint_.x + (shiftOfStartPoint_.x / partTravelled );
-    newPoint.y = startPoint_.y + (shiftOfStartPoint_.y / partTravelled );
+    newPoint.x = startPoint_.x + (shiftOfStartPoint_.x * partTravelled);
+    newPoint.y = startPoint_.y + (shiftOfStartPoint_.y * partTravelled);
 
     return newPoint;
 }

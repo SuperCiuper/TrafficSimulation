@@ -8,9 +8,9 @@
 namespace trafficsimulation::view
 {
 
-constexpr auto JUNCTIONRADIUS = uint32_t{36};
-constexpr auto DRIVERRADIUS = uint32_t{3};
-constexpr auto PEDESTRIANRADIUS = uint32_t{2};
+constexpr auto JUNCTIONDIAMETER = uint32_t{36};
+constexpr auto DRIVERDIAMETER = uint32_t{6};
+constexpr auto PEDESTRIANDIAMETER = uint32_t{4};
 
 namespace
 {
@@ -80,8 +80,8 @@ void JunctionPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     // auto brush = QBrush{Qt::green};
     painter->setPen(QPen{Qt::blue, 2, Qt::SolidLine});
     painter->setBrush(QBrush{Qt::green});
-    painter->drawEllipse(point_.x - JUNCTIONRADIUS/2, point_.y - JUNCTIONRADIUS/2,
-        JUNCTIONRADIUS, JUNCTIONRADIUS);
+    painter->drawEllipse(point_.x - JUNCTIONDIAMETER/2, point_.y - JUNCTIONDIAMETER/2,
+        JUNCTIONDIAMETER, JUNCTIONDIAMETER);
 }
 
 DriverPainter::DriverPainter()
@@ -98,8 +98,8 @@ void DriverPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     // auto brush = QBrush{Qt::green};
     painter->setPen(QPen{color_, 1, Qt::SolidLine});
     painter->setBrush(QBrush{color_});
-    painter->drawEllipse(point_.x - DRIVERRADIUS/2, point_.y - DRIVERRADIUS/2,
-        DRIVERRADIUS, DRIVERRADIUS);
+    painter->drawEllipse(point_.x - DRIVERDIAMETER/2, point_.y - DRIVERDIAMETER/2,
+        DRIVERDIAMETER, DRIVERDIAMETER);
 }
 
 PedestrianPainter::PedestrianPainter()
@@ -116,8 +116,8 @@ void PedestrianPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     // auto brush = QBrush{Qt::green};
     painter->setPen(QPen{color_, 1, Qt::SolidLine});
     painter->setBrush(QBrush{color_});
-    painter->drawEllipse(point_.x - PEDESTRIANRADIUS/2, point_.y - PEDESTRIANRADIUS/2,
-        PEDESTRIANRADIUS, PEDESTRIANRADIUS);
+    painter->drawEllipse(point_.x - PEDESTRIANDIAMETER/2, point_.y - PEDESTRIANDIAMETER/2,
+        PEDESTRIANDIAMETER, PEDESTRIANDIAMETER);
 }
 
 } // trafficsimulation::view
