@@ -5,6 +5,8 @@
 #include <QBrush>
 #include <QPainter>
 
+#include <iostream>
+
 namespace trafficsimulation::view
 {
 
@@ -24,6 +26,7 @@ void PathPainter::setPoints(const common::Point startPoint, const common::Point 
 
 void PathPainter::paint()
 {
+    std::cout << " PathPainter paint " << std::endl;
     update();
 }
 
@@ -41,8 +44,8 @@ PavementPainter::~PavementPainter() = default;
 
 void PavementPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    // auto pen = QPen{Qt::blue, 2, Qt::SolidLine};
-    // auto brush = QBrush{Qt::green};
+    std::cout << " PavementPainter paint " << std::endl;
+
     painter->setPen(QPen{Qt::gray, 2, Qt::SolidLine});
     painter->drawLine(startPoint_.x, startPoint_.y, endPoint_.x, endPoint_.y);
 }
@@ -56,9 +59,7 @@ RoadPainter::~RoadPainter() = default;
 
 void RoadPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    // auto pen = QPen{Qt::blue, 2, Qt::SolidLine};
-    // auto brush = QBrush{Qt::green};
-    painter->setPen(QPen{Qt::black, 2, Qt::SolidLine});
+    painter->setPen(QPen{Qt::black, 4, Qt::SolidLine});
     painter->drawLine(startPoint_.x, startPoint_.y, endPoint_.x, endPoint_.y);
 }
 

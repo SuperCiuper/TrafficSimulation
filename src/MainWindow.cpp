@@ -2,11 +2,12 @@
 #include "ui_mainwindow.h"
 
 #include <QGraphicsScene>
-#include <QMessageBox>
 
 #include "include/view/PathPainters.hpp"
 #include "include/view/PointPainters.hpp"
 #include "include/controller/SimulationController.hpp"
+
+#include <iostream>
 
 namespace trafficsimulation
 {
@@ -19,9 +20,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui_->setupUi(this);
     ui_->graphicsView->setScene(scene_);
-    ui_->graphicsView->setRenderHint(QPainter::Antialiasing);
+    ui_->graphicsView->installEventFilter(new GraphicsViewFilter{});
 
     scene_->setSceneRect(0, 0, SCENEWIDTH, SCENEHEIGHT);
+    scene_->installEventFilter(this);
 
     auto line1 = QLineF(scene_->sceneRect().topLeft(), scene_->sceneRect().topRight());
     auto line2 = QLineF(scene_->sceneRect().topLeft(), scene_->sceneRect().bottomLeft());

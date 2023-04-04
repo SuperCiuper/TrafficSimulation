@@ -12,9 +12,11 @@ CreateJunctionDialog::CreateJunctionDialog(const uint32_t minValue, const uint32
     ui_->setupUi(this);
     ui_->widthSpinBox->setMinimum(minValue);
     ui_->widthSpinBox->setMaximum(maxWidth);
+    ui_->widthSpinBox->setValue((minValue + maxWidth) / 2);
 
     ui_->heightSpinBox->setMaximum(minValue);
     ui_->heightSpinBox->setMaximum(maxHeight);
+    ui_->heightSpinBox->setValue((minValue + maxHeight) / 2);
 }
 
 CreateJunctionDialog::~CreateJunctionDialog()

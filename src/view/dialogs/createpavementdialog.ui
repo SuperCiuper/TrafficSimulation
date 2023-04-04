@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>257</width>
-    <height>230</height>
+    <width>280</width>
+    <height>190</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,13 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>91</y>
-     <width>181</width>
+     <y>150</y>
+     <width>241</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
@@ -28,48 +31,89 @@
    <property name="standardButtons">
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
+   <property name="centerButtons">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>53</y>
-     <width>181</width>
-     <height>24</height>
+     <y>17</y>
+     <width>241</width>
+     <height>31</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="heightLayout">
+   <layout class="QHBoxLayout" name="startJunctionLayout">
     <item>
-     <widget class="QLabel" name="heightLabel">
+     <widget class="QLabel" name="startJunctionLabel">
       <property name="text">
-       <string>Position Y</string>
+       <string>Start junction</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QSpinBox" name="heightSpinBox"/>
+     <widget class="QComboBox" name="startJunctionComboBox"/>
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="layoutWidget_2">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>23</y>
-     <width>181</width>
-     <height>24</height>
+     <y>60</y>
+     <width>241</width>
+     <height>31</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="widthLayout">
+   <layout class="QHBoxLayout" name="endJunctionLayout">
     <item>
-     <widget class="QLabel" name="widthLabel">
+     <widget class="QLabel" name="endJunctionLabel">
       <property name="text">
-       <string>Position X</string>
+       <string>End junction</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QSpinBox" name="widthSpinBox"/>
+     <widget class="QComboBox" name="endJunctionComboBox"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget_3">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>100</y>
+     <width>241</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="lengthLayout">
+    <item>
+     <widget class="QLabel" name="lengthLabel">
+      <property name="text">
+       <string>Length (meters)</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QSpinBox" name="lengthSpinBox">
+      <property name="minimum">
+       <number>20</number>
+      </property>
+      <property name="maximum">
+       <number>100000</number>
+      </property>
+      <property name="singleStep">
+       <number>5</number>
+      </property>
+      <property name="stepType">
+       <enum>QAbstractSpinBox::DefaultStepType</enum>
+      </property>
+      <property name="value">
+       <number>100</number>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -78,33 +122,33 @@
  <connections>
   <connection>
    <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>CreatePavementDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
    <signal>rejected()</signal>
    <receiver>CreatePavementDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>200</x>
+     <y>180</y>
     </hint>
     <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
+     <x>279</x>
+     <y>189</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>CreatePavementDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>200</x>
+     <y>180</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>189</y>
     </hint>
    </hints>
   </connection>

@@ -89,12 +89,45 @@ const std::vector<std::shared_ptr<Pedestrian> > &Simulation::getPedestrians() co
     return pedestrians_;
 }
 
+const std::map<uint32_t, std::vector<uint32_t>> Simulation::getConnectedJunctionsByRoad() const
+{
+    auto connectedJunctions = std::map<uint32_t, std::vector<uint32_t>>{};
+
+    for(const auto& roads : roadConnections_)
+    {
+        auto startJunctionId = roads.first;
+
+        for(const auto& road : roads.second)
+        {
+            connectedJunctions[startJunctionId].push_back(road->getJunction()->getId());
+        }
+    }
+    return connectedJunctions;
+}
+
+const std::map<uint32_t, std::vector<uint32_t>> Simulation::getConnectedJunctionsByPavement() const
+{
+    auto connectedJunctions = std::map<uint32_t, std::vector<uint32_t>>{};
+
+    for(const auto& roads : pavementConnections_)
+    {
+        auto startJunctionId = roads.first;
+
+        for(const auto& road : roads.second)
+        {
+            connectedJunctions[startJunctionId].push_back(road->getJunction()->getId());
+        }
+    }
+    return connectedJunctions;
+}
+
 void Simulation::addJunction(const common::Point position,
     std::unique_ptr<interface::PointPainter> painter)
 {
     junctionId_++;
     auto junction = std::make_shared<Junction>(junctionId_, position);
     junction->setPainter(std::move(painter));
+    junction->update();
     junctions_.push_back(junction);
 }
 
@@ -111,6 +144,8 @@ void Simulation::addRoad(const std::shared_ptr<Junction> startJunction,
     auto road = std::make_shared<Road>(pathId_, length, startPoint, endPoint,
         endJunction, roadCondition, speedLimit);
     road->setPainter(painter);
+    startJunction->update();
+    endJunction->update();
     roadConnections_[startJunction->getId()].push_back(road);
 }
 
@@ -125,6 +160,8 @@ void Simulation::addPavement(const std::shared_ptr<Junction> startJunction,
 
     auto pavement = std::make_shared<Path>(pathId_, length, startPoint, endPoint, endJunction);
     pavement->setPainter(painter);
+    startJunction->update();
+    endJunction->update();
     pavementConnections_[startJunction->getId()].push_back(pavement);
 }
 
@@ -261,10 +298,10 @@ void Simulation::generateBaseSimulation()
     auto junction = std::make_shared<Junction>(junctionId_, common::Point{20, 20});
     junctions_.push_back(junction);
 
-    auto startPointRoad = common::Point{-200, -200};
+    auto startPointRoad = common::Point{-100, -100};
     auto endPointRoad = common::Point{20, 20};
     calculatePathPoints(startPointRoad, endPointRoad, ROADOFFSET, SPAWNPATHSLENGTH);
-    auto startPointPavement = common::Point{-200, -200};
+    auto startPointPavement = common::Point{-100, -100};
     auto endPointPavement = common::Point{20, 20};
     calculatePathPoints(startPointPavement, endPointPavement, PAVEMENTOFFSET, SPAWNPATHSLENGTH);
 

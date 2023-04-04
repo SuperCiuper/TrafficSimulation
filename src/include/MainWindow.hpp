@@ -4,6 +4,12 @@
 #include <memory>
 
 #include <QMainWindow>
+#include <QEvent>
+
+#include <iostream>
+
+#include <QMetaEnum>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -23,6 +29,40 @@ namespace trafficsimulation
 
 constexpr auto SCENEWIDTH = uint32_t{1300};
 constexpr auto SCENEHEIGHT = uint32_t{820};
+
+class GraphicsViewFilter : public QObject
+{
+    Q_OBJECT
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) override {
+
+        int eventEnumIndex = QEvent::staticMetaObject.indexOfEnumerator("Type");
+        auto str = qDebug();
+        str << "QEvent";
+        if (event)
+        {
+            QString name = QEvent::staticMetaObject.enumerator(eventEnumIndex).valueToKey(event->type());
+            if (!name.isEmpty()) str << name;
+            else str << event->type();
+           }
+        else
+        {
+            str << (void*)event;
+        }
+
+        if(event->type() == QEvent::Paint)
+        {
+            //return false;
+        }
+        if(event->type() == QEvent::WindowActivate || event->type() == QEvent::WindowDeactivate)
+        {
+            str << "NOPE";
+            //return true;
+        }
+        return QObject::eventFilter(obj, event);
+    };
+};
 
 class MainWindow : public QMainWindow
 {

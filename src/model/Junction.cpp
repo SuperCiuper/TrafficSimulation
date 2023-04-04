@@ -9,6 +9,8 @@
 #include "../include/model/Path.hpp"
 #include "../include/model/Road.hpp"
 
+#include <iostream>
+
 namespace trafficsimulation::model
 {
 
@@ -201,6 +203,7 @@ void Junction::setPainter(std::unique_ptr<interface::PointPainter> painter)
 
 void Junction::update()
 {
+    std::cout << " junction paint " << std::endl;
     if(painter_ == nullptr)
     {
         // add log

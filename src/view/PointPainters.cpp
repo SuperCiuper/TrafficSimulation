@@ -5,6 +5,8 @@
 #include <QBrush>
 #include <QPainter>
 
+#include <iostream>
+
 namespace trafficsimulation::view
 {
 
@@ -59,6 +61,7 @@ void PointPainter::setPoint(const common::Point point, const bool highlight)
 
 void PointPainter::paint()
 {
+    std::cout << " PointPainter paint " << std::endl;
     update();
 }
 
@@ -76,8 +79,6 @@ JunctionPainter::~JunctionPainter() = default;
 
 void JunctionPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    // auto pen = QPen{Qt::blue, 2, Qt::SolidLine};
-    // auto brush = QBrush{Qt::green};
     painter->setPen(QPen{Qt::blue, 2, Qt::SolidLine});
     painter->setBrush(QBrush{Qt::green});
     painter->drawEllipse(point_.x - JUNCTIONDIAMETER/2, point_.y - JUNCTIONDIAMETER/2,

@@ -44,6 +44,8 @@ public:
     const std::vector<std::shared_ptr<Junction>>& getJunctions() const;
     const std::vector<std::shared_ptr<Driver>>& getDrivers() const;
     const std::vector<std::shared_ptr<Pedestrian>>& getPedestrians() const;
+    const std::map<uint32_t, std::vector<uint32_t>> getConnectedJunctionsByRoad() const;
+    const std::map<uint32_t, std::vector<uint32_t>> getConnectedJunctionsByPavement() const;
 
     void addJunction(const common::Point position, std::unique_ptr<interface::PointPainter> painter);
     void addRoad(const std::shared_ptr<Junction> startJunction,
