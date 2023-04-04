@@ -20,7 +20,7 @@ public:
     QRectF boundingRect() const override;
 
 protected:
-    PathPainter();
+    PathPainter(QWidget *parent = nullptr);
 
     common::Point startPoint_;
     common::Point endPoint_;
@@ -29,7 +29,7 @@ protected:
 class PavementPainter : public PathPainter
 {
 public:
-    PavementPainter();
+    PavementPainter(QWidget *parent = nullptr);
     ~PavementPainter();
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
@@ -38,7 +38,7 @@ public:
 class RoadPainter : public PathPainter
 {
 public:
-    RoadPainter();
+    RoadPainter(QWidget *parent = nullptr);
     ~RoadPainter();
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

@@ -46,7 +46,9 @@ QColor randomColor()
 }
 
 PointPainter::PointPainter()
-    : point_{common::Point{-10, -10}}
+    : interface::PointPainter{}
+    , QGraphicsItem{}
+    , point_{common::Point{-10, -10}}
     , highlight_{false}
 {
 }
@@ -62,7 +64,7 @@ void PointPainter::setPoint(const common::Point point, const bool highlight)
 void PointPainter::paint()
 {
     std::cout << " PointPainter paint " << std::endl;
-    update();
+    QGraphicsItem::update();
 }
 
 QRectF PointPainter::boundingRect() const
@@ -79,6 +81,8 @@ JunctionPainter::~JunctionPainter() = default;
 
 void JunctionPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    std::cout << " JunctionPainter paint " << std::endl;
+
     painter->setPen(QPen{Qt::blue, 2, Qt::SolidLine});
     painter->setBrush(QBrush{Qt::green});
     painter->drawEllipse(point_.x - JUNCTIONDIAMETER/2, point_.y - JUNCTIONDIAMETER/2,
@@ -89,14 +93,13 @@ DriverPainter::DriverPainter()
     : PointPainter{}
     , color_{randomColor()}
 {
+    //setZValue(3);
 }
 
 DriverPainter::~DriverPainter() = default;
 
 void DriverPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    // auto pen = QPen{Qt::blue, 2, Qt::SolidLine};
-    // auto brush = QBrush{Qt::green};
     painter->setPen(QPen{color_, 1, Qt::SolidLine});
     painter->setBrush(QBrush{color_});
     painter->drawEllipse(point_.x - DRIVERDIAMETER/2, point_.y - DRIVERDIAMETER/2,

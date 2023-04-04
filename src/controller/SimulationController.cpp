@@ -87,7 +87,7 @@ void SimulationController::addPavement()
 
 void SimulationController::addRoad()
 {
-
+    simulation_->repaint();
 }
 
 void SimulationController::addDriver()

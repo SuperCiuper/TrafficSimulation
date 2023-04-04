@@ -51,14 +51,10 @@ protected:
             str << (void*)event;
         }
 
-        if(event->type() == QEvent::Paint)
-        {
-            //return false;
-        }
-        if(event->type() == QEvent::WindowActivate || event->type() == QEvent::WindowDeactivate)
+        if(event->type() == QEvent::WindowActivate)
         {
             str << "NOPE";
-            //return true;
+            return true;
         }
         return QObject::eventFilter(obj, event);
     };

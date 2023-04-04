@@ -50,35 +50,35 @@ MainWindow::~MainWindow()
 
 std::unique_ptr<interface::PointPainter> MainWindow::addJunctionPainter()
 {
-    auto painter = new view::JunctionPainter{};
+    auto painter = new view::JunctionPainter{scene_};
     scene_->addItem(painter);
     return std::unique_ptr<interface::PointPainter>(painter);
 }
 
 std::unique_ptr<interface::PointPainter> MainWindow::addDriverPainter()
 {
-    auto painter = new view::DriverPainter{};
+    auto painter = new view::DriverPainter{scene_};
     scene_->addItem(painter);
     return std::unique_ptr<interface::PointPainter>(painter);
 }
 
 std::unique_ptr<interface::PointPainter> MainWindow::addPedestrianPainter()
 {
-    auto painter = new view::PedestrianPainter{};
+    auto painter = new view::PedestrianPainter{scene_};
     scene_->addItem(painter);
     return std::unique_ptr<interface::PointPainter>(painter);
 }
 
 std::unique_ptr<interface::LinePainter> MainWindow::addRoadPainter()
 {
-    auto painter = new view::RoadPainter{};
+    auto painter = new view::RoadPainter{scene_};
     scene_->addItem(painter);
     return std::unique_ptr<interface::LinePainter>(painter);
 }
 
 std::unique_ptr<interface::LinePainter> MainWindow::addPavementPainter()
 {
-    auto painter = new view::PavementPainter{};
+    auto painter = new view::PavementPainter{scene_};
     scene_->addItem(painter);
     return std::unique_ptr<interface::LinePainter>(painter);
 }

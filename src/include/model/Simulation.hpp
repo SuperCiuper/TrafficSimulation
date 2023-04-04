@@ -70,6 +70,8 @@ public:
     void addPedestrian(std::unique_ptr<interface::PointPainter> painter);
     void addPedestrian(const uint32_t maxSpeed, std::unique_ptr<interface::PointPainter> painter);
 
+    void repaint();
+
 private:
     void updateObjects();
 

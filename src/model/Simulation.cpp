@@ -208,6 +208,13 @@ void Simulation::addPedestrian(const uint32_t maxSpeed, std::unique_ptr<interfac
     addPedestrian(std::make_shared<Pedestrian>(spawnPavement_, maxSpeed), std::move(painter));
 }
 
+void Simulation::repaint()
+{
+    auto junction = junctions_.front();
+
+    junction->update();
+}
+
 void Simulation::updateObjects()
 {
     for(const auto& junction : junctions_)
