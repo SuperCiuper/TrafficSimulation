@@ -16,6 +16,7 @@ constexpr uint32_t NO_DESTINATION = 0x0000;
 class MovingObject
 {
 public:
+    virtual ~MovingObject();
     uint32_t getDestination() const;
 
     void setDestination(const uint32_t newDestinationId);
@@ -25,7 +26,6 @@ public:
 
 protected:
     MovingObject();
-    virtual ~MovingObject();
 
     virtual void move() = 0;
 
