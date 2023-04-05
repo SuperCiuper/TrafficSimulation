@@ -65,6 +65,4 @@ void CreatePavementDialog::handleStartJunctionChange(int startJunctionId)
     ui_->endJunctionComboBox->setCurrentIndex(0);
 }
 
-
-
 } // trafficsimulation::view::dialogs

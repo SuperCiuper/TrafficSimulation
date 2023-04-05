@@ -3,24 +3,12 @@
 
 #include <QDialog>
 
-#include "../../common/Point.hpp"
+#include "NotConnectedJunction.hpp"
 
 namespace Ui { class CreatePavementDialog; }
 
 namespace trafficsimulation::view::dialogs
 {
-
-struct Junction
-{
-    uint32_t junctionId;
-    common::Point position;
-};
-
-struct NotConnectedJunction
-{
-    Junction startJunction;
-    std::vector<Junction> endJunctions;
-};
 
 class CreatePavementDialog : public QDialog
 {
@@ -37,7 +25,6 @@ public:
 
 private:
     void handleStartJunctionChange(int startJunctionId);
-    void handleOkClick();
 
     Ui::CreatePavementDialog *ui_;
     const std::vector<NotConnectedJunction> notConnectedJunctions_;

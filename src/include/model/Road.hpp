@@ -2,20 +2,12 @@
 #define ROAD_HPP
 
 #include "Path.hpp"
+#include "RoadCondition.hpp"
 
 namespace trafficsimulation::model
 {
 
 class Vehicle;
-
-enum class RoadCondition
-{
-    New,
-    NoPotHoles,
-    SomePotHoles,
-    LotsOfPotHoles,
-    Offroad
-};
 
 class Road : public Path
 {

@@ -48,7 +48,7 @@
      <set>QPainter::Antialiasing|QPainter::TextAntialiasing</set>
     </property>
     <property name="viewportUpdateMode">
-     <enum>QGraphicsView::NoViewportUpdate</enum>
+     <enum>QGraphicsView::MinimalViewportUpdate</enum>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">

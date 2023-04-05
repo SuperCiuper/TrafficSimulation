@@ -11,6 +11,7 @@
 
 #include "../include/view/dialogs/CreateJunctionDialog.hpp"
 #include "../include/view/dialogs/CreatePavementDialog.hpp"
+#include "../include/view/dialogs/CreatePedestrianDialog.hpp"
 #include "../include/view/dialogs/CreateRoadDialog.hpp"
 
 namespace trafficsimulation::controller
@@ -39,9 +40,84 @@ void SimulationController::addJunction()
 
 void SimulationController::addPavement()
 {
-    auto junctions = simulation_->getJunctions();
-    auto connectedJunctions = simulation_->getConnectedJunctionsByRoad();
+    const auto& connectedJunctions = simulation_->getConnectedJunctionsByPavement();
+    const auto& notConnectedJunctions = findNotConnectedJunctions(connectedJunctions);
+
+    if(std::size(notConnectedJunctions) == 0)
+    {
+        return;
+    }
+
+    auto dialog = view::dialogs::CreatePavementDialog{notConnectedJunctions, mainWindow_};
+    if(dialog.exec() == QDialog::Accepted)
+    {
+        auto junctions = simulation_->getJunctions();
+        auto startJunction = std::find_if(junctions.cbegin(), junctions.cend(),
+            [startId = dialog.getStartId()](const auto j){ return j->getId() == startId; });
+        auto endJunction = std::find_if(junctions.cbegin(), junctions.cend(),
+            [endId = dialog.getEndId()](const auto j){ return j->getId() == endId; });
+
+        simulation_->addPavement(*startJunction, *endJunction, dialog.getLength(),
+            mainWindow_->addPavementPainter());
+    }
+}
+
+void SimulationController::addRoad()
+{
+    const auto& connectedJunctions = simulation_->getConnectedJunctionsByRoad();
+    const auto& notConnectedJunctions = findNotConnectedJunctions(connectedJunctions);
+
+    if(std::size(notConnectedJunctions) == 0)
+    {
+        return;
+    }
+
+    auto dialog = view::dialogs::CreateRoadDialog{notConnectedJunctions, mainWindow_};
+    if(dialog.exec() == QDialog::Accepted)
+    {
+        auto junctions = simulation_->getJunctions();
+        auto startJunction = std::find_if(junctions.cbegin(), junctions.cend(),
+            [startId = dialog.getStartId()](const auto j){ return j->getId() == startId; });
+        auto endJunction = std::find_if(junctions.cbegin(), junctions.cend(),
+            [endId = dialog.getEndId()](const auto j){ return j->getId() == endId; });
+
+        simulation_->addRoad(*startJunction, *endJunction, dialog.getLength(),
+            dialog.getRoadCondition(), dialog.getSpeedLimit(),
+            mainWindow_->addRoadPainter());
+    }
+}
+
+void SimulationController::addDriver()
+{
+    simulation_->repaint();
+}
+
+void SimulationController::addPedestrian()
+{
+    auto dialog = view::dialogs::CreatePedestrianDialog{mainWindow_};
+    if(dialog.exec() == QDialog::Accepted)
+    {
+        simulation_->addPedestrian(dialog.getMaxSpeed(), mainWindow_->addPedestrianPainter());
+    }
+}
+
+void SimulationController::createSimulation()
+{
+    simulation_ = std::make_unique<model::Simulation>();
+    simulation_->setBasePrinters(std::move(mainWindow_->addJunctionPainter()),
+        std::move(mainWindow_->addRoadPainter()), std::move(mainWindow_->addPavementPainter()));
+}
+
+void SimulationController::resetSimulation()
+{
+
+}
+
+std::vector<view::dialogs::NotConnectedJunction> SimulationController::findNotConnectedJunctions(
+    std::map<uint32_t, std::vector<uint32_t>> connectedJunctions)
+{
     auto notConnectedJunctions = std::vector<view::dialogs::NotConnectedJunction>{};
+    auto junctions = simulation_->getJunctions();
     for(const auto& startJunction : junctions)
     {
         auto notConnectedJunction = view::dialogs::NotConnectedJunction{};
@@ -69,47 +145,8 @@ void SimulationController::addPavement()
         auto msgBox = new QMessageBox{mainWindow_};
         msgBox->setText("All junctions are connected! Add new junction");
         msgBox->exec();
-        return;
     }
-
-    auto dialog = view::dialogs::CreatePavementDialog{notConnectedJunctions, mainWindow_};
-    if(dialog.exec() == QDialog::Accepted)
-    {
-        auto startJunction = std::find_if(junctions.cbegin(), junctions.cend(),
-            [startId = dialog.getStartId()](const auto j){ return j->getId() == startId; });
-        auto endJunction = std::find_if(junctions.cbegin(), junctions.cend(),
-            [endId = dialog.getEndId()](const auto j){ return j->getId() == endId; });
-
-        simulation_->addPavement(*startJunction, *endJunction, dialog.getLength(),
-            mainWindow_->addPavementPainter());
-    }
-}
-
-void SimulationController::addRoad()
-{
-    simulation_->repaint();
-}
-
-void SimulationController::addDriver()
-{
-
-}
-
-void SimulationController::addPedestrian()
-{
-
-}
-
-void SimulationController::createSimulation()
-{
-    simulation_ = std::make_unique<model::Simulation>();
-    simulation_->setBasePrinters(std::move(mainWindow_->addJunctionPainter()),
-        std::move(mainWindow_->addRoadPainter()), std::move(mainWindow_->addPavementPainter()));
-}
-
-void SimulationController::resetSimulation()
-{
-
+    return notConnectedJunctions;
 }
 
 } // trafficsimulation::controller

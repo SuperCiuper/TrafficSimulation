@@ -109,11 +109,11 @@ const std::map<uint32_t, std::vector<uint32_t>> Simulation::getConnectedJunction
 {
     auto connectedJunctions = std::map<uint32_t, std::vector<uint32_t>>{};
 
-    for(const auto& roads : pavementConnections_)
+    for(const auto& pavements : pavementConnections_)
     {
-        auto startJunctionId = roads.first;
+        auto startJunctionId = pavements.first;
 
-        for(const auto& road : roads.second)
+        for(const auto& road : pavements.second)
         {
             connectedJunctions[startJunctionId].push_back(road->getJunction()->getId());
         }
@@ -248,7 +248,8 @@ void Simulation::updateObjects()
 void Simulation::calculatePathPoints(common::Point &startPoint, common::Point &endPoint,
     const uint32_t offset, const uint32_t length)
 {
-    const auto junctionPosition = endPoint;
+    const auto startJunctionPosition = startPoint;
+    const auto endJunctionPosition = endPoint;
 
     if(startPoint.y > endPoint.y)
     {
@@ -283,8 +284,8 @@ void Simulation::calculatePathPoints(common::Point &startPoint, common::Point &e
     {
         currentLength /= 2;
 
-        auto changeOnX = endPoint.x - junctionPosition.x;
-        auto changeOnY = endPoint.y - junctionPosition.y;
+        auto changeOnX = endPoint.x - endJunctionPosition.x;
+        auto changeOnY = endPoint.y - endJunctionPosition.y;
         if((changeOnX * changeOnX) + (changeOnY * changeOnY) > junctionRadiusSquared)
         {
             traversedLength += currentLength;
@@ -296,6 +297,31 @@ void Simulation::calculatePathPoints(common::Point &startPoint, common::Point &e
         auto partTravelled = static_cast<float>(traversedLength) / static_cast<float>(length);
         endPoint.x = startPoint.x + (startPointShift.x * partTravelled);
         endPoint.y = startPoint.y + (startPointShift.y * partTravelled);
+    }
+
+    auto endPointShift = common::Point{static_cast<int16_t>(startPoint.x - endPoint.x),
+        static_cast<int16_t>(startPoint.y - endPoint.y)};
+    currentLength = length;
+    traversedLength = 0;
+
+    startPoint = endPoint;
+    while(currentLength/2 > 0)
+    {
+        currentLength /= 2;
+
+        auto changeOnX = startPoint.x - startJunctionPosition.x;
+        auto changeOnY = startPoint.y - startJunctionPosition.y;
+        if((changeOnX * changeOnX) + (changeOnY * changeOnY) > junctionRadiusSquared)
+        {
+            traversedLength += currentLength;
+        }
+        else
+        {
+            traversedLength -= currentLength;
+        }
+        auto partTravelled = static_cast<float>(traversedLength) / static_cast<float>(length);
+        startPoint.x = endPoint.x + (endPointShift.x * partTravelled);
+        startPoint.y = endPoint.y + (endPointShift.y * partTravelled);
     }
 }
 

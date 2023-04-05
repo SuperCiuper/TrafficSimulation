@@ -98,6 +98,27 @@
     </item>
     <item>
      <widget class="QSpinBox" name="lengthSpinBox">
+      <property name="wrapping">
+       <bool>false</bool>
+      </property>
+      <property name="frame">
+       <bool>true</bool>
+      </property>
+      <property name="readOnly">
+       <bool>false</bool>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::UpDownArrows</enum>
+      </property>
+      <property name="specialValueText">
+       <string/>
+      </property>
+      <property name="accelerated">
+       <bool>false</bool>
+      </property>
+      <property name="correctionMode">
+       <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+      </property>
       <property name="minimum">
        <number>20</number>
       </property>

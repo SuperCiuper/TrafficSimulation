@@ -26,13 +26,17 @@ set(PROJECT_SOURCES
     src/include/model/Path.hpp
     src/include/model/Pedestrian.hpp
     src/include/model/Road.hpp
+    src/include/model/RoadCondition.hpp
     src/include/model/Simulation.hpp
     src/include/model/Vehicle.hpp
-    src/include/view/PointPainters.hpp
     src/include/view/PathPainters.hpp
+    src/include/view/PointPainters.hpp
+    src/include/view/dialogs/CreateDriverDialog.hpp
     src/include/view/dialogs/CreateJunctionDialog.hpp
     src/include/view/dialogs/CreatePavementDialog.hpp
+    src/include/view/dialogs/CreatePedestrianDialog.hpp
     src/include/view/dialogs/CreateRoadDialog.hpp
+    src/include/view/dialogs/NotConnectedJunction.hpp
 
 
     src/MainWindow.cpp
@@ -44,15 +48,20 @@ set(PROJECT_SOURCES
     src/model/Path.cpp
     src/model/Pedestrian.cpp
     src/model/Road.cpp
+    src/model/RoadCondition.cpp
     src/model/Simulation.cpp
     src/model/Vehicle.cpp
     src/view/PathPainters.cpp
     src/view/PointPainters.cpp
+    src/view/dialogs/CreateDriverDialog.cpp
     src/view/dialogs/CreateJunctionDialog.cpp
     src/view/dialogs/CreatePavementDialog.cpp
+    src/view/dialogs/CreatePedestrianDialog.cpp
     src/view/dialogs/CreateRoadDialog.cpp
+    src/view/dialogs/createdriverdialog.ui
     src/view/dialogs/createjunctiondialog.ui
     src/view/dialogs/createpavementdialog.ui
+    src/view/dialogs/createpedestriandialog.ui
     src/view/dialogs/createroaddialog.ui
 )
 

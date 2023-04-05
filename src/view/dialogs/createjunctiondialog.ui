@@ -47,7 +47,11 @@
      </widget>
     </item>
     <item>
-     <widget class="QSpinBox" name="heightSpinBox"/>
+     <widget class="QSpinBox" name="heightSpinBox">
+      <property name="correctionMode">
+       <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -69,7 +73,14 @@
      </widget>
     </item>
     <item>
-     <widget class="QSpinBox" name="widthSpinBox"/>
+     <widget class="QSpinBox" name="widthSpinBox">
+      <property name="correctionMode">
+       <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>false</bool>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

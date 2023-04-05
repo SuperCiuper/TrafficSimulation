@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include <QBrush>
+#include <QGraphicsScene>
 #include <QPainter>
 
 #include <iostream>
@@ -10,6 +11,12 @@
 namespace trafficsimulation::view
 {
 
+constexpr auto SCENEWIDTH = uint32_t{1300};
+constexpr auto SCENEHEIGHT = uint32_t{820};
+
+constexpr auto JUNCTIONZVALUE = qreal{2};
+constexpr auto DRIVERZVALUE = qreal{3};
+constexpr auto PEDESTRIANZVALUE = qreal{3};
 constexpr auto JUNCTIONDIAMETER = uint32_t{36};
 constexpr auto DRIVERDIAMETER = uint32_t{6};
 constexpr auto PEDESTRIANDIAMETER = uint32_t{4};
@@ -64,17 +71,18 @@ void PointPainter::setPoint(const common::Point point, const bool highlight)
 void PointPainter::paint()
 {
     std::cout << " PointPainter paint " << std::endl;
-    QGraphicsItem::update();
+    /*scene()->*/update();
 }
 
 QRectF PointPainter::boundingRect() const
 {
-    return QRect(0, 0, 1300, 820);
+    return QRect(0, 0, SCENEWIDTH, SCENEHEIGHT);
 }
 
 JunctionPainter::JunctionPainter()
     : PointPainter{}
 {
+    setZValue(JUNCTIONZVALUE);
 }
 
 JunctionPainter::~JunctionPainter() = default;
@@ -93,7 +101,7 @@ DriverPainter::DriverPainter()
     : PointPainter{}
     , color_{randomColor()}
 {
-    //setZValue(3);
+    setZValue(DRIVERZVALUE);
 }
 
 DriverPainter::~DriverPainter() = default;
@@ -110,14 +118,13 @@ PedestrianPainter::PedestrianPainter()
     : PointPainter{}
     , color_{randomColor()}
 {
+    setZValue(PEDESTRIANZVALUE);
 }
 
 PedestrianPainter::~PedestrianPainter() = default;
 
 void PedestrianPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    // auto pen = QPen{Qt::blue, 2, Qt::SolidLine};
-    // auto brush = QBrush{Qt::green};
     painter->setPen(QPen{color_, 1, Qt::SolidLine});
     painter->setBrush(QBrush{color_});
     painter->drawEllipse(point_.x - PEDESTRIANDIAMETER/2, point_.y - PEDESTRIANDIAMETER/2,

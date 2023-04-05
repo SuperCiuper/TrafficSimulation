@@ -23,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui_->graphicsView->installEventFilter(new GraphicsViewFilter{});
 
     scene_->setSceneRect(0, 0, SCENEWIDTH, SCENEHEIGHT);
-    scene_->installEventFilter(this);
 
     auto line1 = QLineF(scene_->sceneRect().topLeft(), scene_->sceneRect().topRight());
     auto line2 = QLineF(scene_->sceneRect().topLeft(), scene_->sceneRect().bottomLeft());
