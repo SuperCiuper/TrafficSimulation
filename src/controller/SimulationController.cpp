@@ -9,6 +9,7 @@
 #include "../include/model/Junction.hpp"
 #include "../include/model/Simulation.hpp"
 
+#include "../include/view/dialogs/CreateDriverDialog.hpp"
 #include "../include/view/dialogs/CreateJunctionDialog.hpp"
 #include "../include/view/dialogs/CreatePavementDialog.hpp"
 #include "../include/view/dialogs/CreatePedestrianDialog.hpp"
@@ -89,7 +90,31 @@ void SimulationController::addRoad()
 
 void SimulationController::addDriver()
 {
-    simulation_->repaint();
+    auto dialog = view::dialogs::CreateDriverDialog{mainWindow_};
+    if(dialog.exec() == QDialog::Accepted)
+    {
+        if(dialog.isVehicleRandomized() && dialog.isDriverRandomized())
+        {
+            simulation_->addDriver(mainWindow_->addPedestrianPainter());
+            return;
+        }
+        if(dialog.isVehicleRandomized())
+        {
+            simulation_->addDriver(dialog.getAccelerationRate(), dialog.getMinDistanceToVehicle(),
+                dialog.getMaxSpeedOverLimit(), dialog.getRoadConditionSpeedModifier(),
+                mainWindow_->addPedestrianPainter());
+            return;
+        }
+        if(dialog.isDriverRandomized())
+        {
+            simulation_->addDriver(dialog.getMaxAcceleration(), dialog.getMaxDeceleration(),
+                mainWindow_->addPedestrianPainter());
+            return;
+        }
+        simulation_->addDriver(dialog.getMaxAcceleration(), dialog.getMaxDeceleration(),
+            dialog.getAccelerationRate(), dialog.getMinDistanceToVehicle(), dialog.getMaxSpeedOverLimit(),
+            dialog.getRoadConditionSpeedModifier(), mainWindow_->addPedestrianPainter());
+    }
 }
 
 void SimulationController::addPedestrian()
@@ -97,8 +122,34 @@ void SimulationController::addPedestrian()
     auto dialog = view::dialogs::CreatePedestrianDialog{mainWindow_};
     if(dialog.exec() == QDialog::Accepted)
     {
+        if(dialog.isRandomized())
+        {
+            simulation_->addPedestrian(mainWindow_->addPedestrianPainter());
+            return;
+        }
         simulation_->addPedestrian(dialog.getMaxSpeed(), mainWindow_->addPedestrianPainter());
     }
+}
+
+void SimulationController::resetSimulation()
+{
+    simulation_ = nullptr;
+    createSimulation();
+}
+
+void SimulationController::startSimulation()
+{
+    simulation_->start();
+}
+
+void SimulationController::stopSimulation()
+{
+    simulation_->stop();
+}
+
+bool SimulationController::isSimulationRunning()
+{
+    return simulation_->isRunning();
 }
 
 void SimulationController::createSimulation()
@@ -106,11 +157,6 @@ void SimulationController::createSimulation()
     simulation_ = std::make_unique<model::Simulation>();
     simulation_->setBasePrinters(std::move(mainWindow_->addJunctionPainter()),
         std::move(mainWindow_->addRoadPainter()), std::move(mainWindow_->addPavementPainter()));
-}
-
-void SimulationController::resetSimulation()
-{
-
 }
 
 std::vector<view::dialogs::NotConnectedJunction> SimulationController::findNotConnectedJunctions(

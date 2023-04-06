@@ -62,7 +62,7 @@ model::RoadCondition CreateRoadDialog::getRoadCondition() const
 
 uint32_t CreateRoadDialog::getSpeedLimit() const
 {
-    return static_cast<uint32_t>(ui_->speedLimitSpinBox->value()) * 100;
+    return static_cast<uint32_t>(ui_->speedLimitSpinBox->value()) * 10;
 }
 
 void CreateRoadDialog::handleStartJunctionChange(int startJunctionId)

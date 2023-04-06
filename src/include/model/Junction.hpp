@@ -52,8 +52,8 @@ public:
     common::Point getPosition() const;
     uint32_t getSpeedLimit() const;
     bool isGreenLight(const uint32_t pathId) const;
-    const std::vector<std::shared_ptr<Road>>& getOutgoingRoads() const;
-    const std::vector<std::shared_ptr<Path>>& getOutgoingPavements() const;
+    std::vector<std::shared_ptr<Road>> getOutgoingRoads() const;
+    std::vector<std::shared_ptr<Path>> getOutgoingPavements() const;
     const std::shared_ptr<Road> getFastestRoad(const uint32_t destinationId);
     const std::shared_ptr<Path> getFastestPavement(const uint32_t destinationId);
 

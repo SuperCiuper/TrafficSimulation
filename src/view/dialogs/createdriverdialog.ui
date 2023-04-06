@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>280</width>
-    <height>260</height>
+    <width>330</width>
+    <height>340</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <rect>
      <x>20</x>
      <y>20</y>
-     <width>241</width>
+     <width>291</width>
      <height>31</height>
     </rect>
    </property>
@@ -31,21 +31,24 @@
      </widget>
     </item>
     <item>
-     <widget class="QSpinBox" name="lengthSpinBox">
+     <widget class="QSpinBox" name="maxAccelerationSpinBox">
+      <property name="correctionMode">
+       <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+      </property>
       <property name="minimum">
-       <number>20</number>
+       <number>4</number>
       </property>
       <property name="maximum">
-       <number>100000</number>
+       <number>20</number>
       </property>
       <property name="singleStep">
-       <number>5</number>
+       <number>1</number>
       </property>
       <property name="stepType">
        <enum>QAbstractSpinBox::DefaultStepType</enum>
       </property>
       <property name="value">
-       <number>100</number>
+       <number>6</number>
       </property>
      </widget>
     </item>
@@ -55,8 +58,8 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>220</y>
-     <width>241</width>
+     <y>290</y>
+     <width>291</width>
      <height>31</height>
     </rect>
    </property>
@@ -77,35 +80,38 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>180</y>
-     <width>241</width>
+     <y>220</y>
+     <width>291</width>
      <height>31</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="speedLimitLayout">
+   <layout class="QHBoxLayout" name="roadConditionSpeedModifierLayout">
     <item>
-     <widget class="QLabel" name="speedLimitLabel">
+     <widget class="QLabel" name="roadConditionSpeedModifierLabel">
       <property name="text">
-       <string>Speed limit (km/h)</string>
+       <string>Road condition speed modifier</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QSpinBox" name="speedLimitSpinBox">
+     <widget class="QDoubleSpinBox" name="roadConditionSpeedModifierDoubleSpinBox">
+      <property name="correctionMode">
+       <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+      </property>
+      <property name="decimals">
+       <number>3</number>
+      </property>
       <property name="minimum">
-       <number>20</number>
+       <double>0.000000000000000</double>
       </property>
       <property name="maximum">
-       <number>140</number>
+       <double>0.150000000000000</double>
       </property>
       <property name="singleStep">
-       <number>10</number>
-      </property>
-      <property name="stepType">
-       <enum>QAbstractSpinBox::DefaultStepType</enum>
+       <double>0.010000000000000</double>
       </property>
       <property name="value">
-       <number>30</number>
+       <double>0.050000000000000</double>
       </property>
      </widget>
     </item>
@@ -116,34 +122,28 @@
     <rect>
      <x>20</x>
      <y>140</y>
-     <width>241</width>
+     <width>291</width>
      <height>31</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="lengthLayout_3">
+   <layout class="QHBoxLayout" name="minDistanceToVehicleLayout">
     <item>
-     <widget class="QLabel" name="lengthLabel_3">
+     <widget class="QLabel" name="minDistanceToVehicleLabel">
       <property name="text">
-       <string>Length (meters)</string>
+       <string>Minimum distance to vehicle ahead (meters)</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QSpinBox" name="lengthSpinBox_3">
+     <widget class="QDoubleSpinBox" name="minDistanceToVehicleDoubleSpinBox">
+      <property name="correctionMode">
+       <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
       <property name="minimum">
-       <number>20</number>
-      </property>
-      <property name="maximum">
-       <number>100000</number>
-      </property>
-      <property name="singleStep">
-       <number>5</number>
-      </property>
-      <property name="stepType">
-       <enum>QAbstractSpinBox::DefaultStepType</enum>
-      </property>
-      <property name="value">
-       <number>100</number>
+       <double>0.500000000000000</double>
       </property>
      </widget>
     </item>
@@ -154,34 +154,31 @@
     <rect>
      <x>20</x>
      <y>100</y>
-     <width>241</width>
+     <width>291</width>
      <height>31</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="lengthLayout_4">
+   <layout class="QHBoxLayout" name="accelerationRate">
     <item>
-     <widget class="QLabel" name="lengthLabel_4">
+     <widget class="QLabel" name="accelerationRateLabel">
       <property name="text">
-       <string>Length (meters)</string>
+       <string>Acceleration rate</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QSpinBox" name="lengthSpinBox_4">
+     <widget class="QDoubleSpinBox" name="accelerationRateDoubleSpinBox">
       <property name="minimum">
-       <number>20</number>
+       <double>0.200000000000000</double>
       </property>
       <property name="maximum">
-       <number>100000</number>
+       <double>1.000000000000000</double>
       </property>
       <property name="singleStep">
-       <number>5</number>
-      </property>
-      <property name="stepType">
-       <enum>QAbstractSpinBox::DefaultStepType</enum>
+       <double>0.050000000000000</double>
       </property>
       <property name="value">
-       <number>100</number>
+       <double>0.500000000000000</double>
       </property>
      </widget>
     </item>
@@ -192,25 +189,107 @@
     <rect>
      <x>20</x>
      <y>60</y>
-     <width>241</width>
+     <width>291</width>
      <height>31</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="lengthLayout_5">
+   <layout class="QHBoxLayout" name="maxDecelerationLayout">
     <item>
-     <widget class="QLabel" name="lengthLabel_5">
+     <widget class="QLabel" name="maxDecelerationLabel">
       <property name="text">
-       <string>Length (meters)</string>
+       <string>Max deceleration</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QSpinBox" name="lengthSpinBox_5">
+     <widget class="QSpinBox" name="maxDecelerationSpinBox">
+      <property name="correctionMode">
+       <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+      </property>
       <property name="minimum">
-       <number>20</number>
+       <number>10</number>
       </property>
       <property name="maximum">
-       <number>100000</number>
+       <number>40</number>
+      </property>
+      <property name="singleStep">
+       <number>1</number>
+      </property>
+      <property name="stepType">
+       <enum>QAbstractSpinBox::DefaultStepType</enum>
+      </property>
+      <property name="value">
+       <number>20</number>
+      </property>
+      <property name="displayIntegerBase">
+       <number>10</number>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QCheckBox" name="randomizeDriverCheckBox">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>260</y>
+     <width>111</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Randomize Driver</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="tristate">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="randomizeVehicleCheckBox">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>260</y>
+     <width>141</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Randomize Vehicle</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget_9">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>180</y>
+     <width>291</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="maxSpeedOverLimitLayout">
+    <item>
+     <widget class="QLabel" name="maxSpeedOverLimitLabel">
+      <property name="text">
+       <string>Maximum speed over limit</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QSpinBox" name="maxSpeedOverLimitSpinBox">
+      <property name="correctionMode">
+       <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+      </property>
+      <property name="minimum">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <number>100</number>
       </property>
       <property name="singleStep">
        <number>5</number>
@@ -219,7 +298,10 @@
        <enum>QAbstractSpinBox::DefaultStepType</enum>
       </property>
       <property name="value">
-       <number>100</number>
+       <number>10</number>
+      </property>
+      <property name="displayIntegerBase">
+       <number>10</number>
       </property>
      </widget>
     </item>

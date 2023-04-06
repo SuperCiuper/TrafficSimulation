@@ -101,9 +101,16 @@
       </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="startResetButton">
+      <widget class="QPushButton" name="startStopButton">
        <property name="text">
         <string>Start</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="resetButton">
+       <property name="text">
+        <string>Reset simulation</string>
        </property>
       </widget>
      </item>

@@ -35,7 +35,6 @@ void PathPainter::setPoints(const common::Point startPoint, const common::Point 
 
 void PathPainter::paint()
 {
-    std::cout << " PathPainter paint " << std::endl;
     scene()->update();
 }
 
@@ -53,8 +52,6 @@ PavementPainter::~PavementPainter() = default;
 
 void PavementPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    std::cout << " PavementPainter paint " << std::endl;
-
     painter->setPen(QPen{Qt::gray, PAVEMENTPENWIDTH, Qt::SolidLine});
     painter->drawLine(startPoint_.x, startPoint_.y, endPoint_.x, endPoint_.y);
 }

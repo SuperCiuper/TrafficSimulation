@@ -16,6 +16,7 @@ public:
     explicit CreatePedestrianDialog(QWidget *parent);
     ~CreatePedestrianDialog();
 
+    bool isRandomized() const;
     uint32_t getMaxSpeed() const;
 
 private:

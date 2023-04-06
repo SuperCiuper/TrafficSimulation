@@ -16,8 +16,8 @@
 namespace trafficsimulation::model
 {
 
-constexpr auto ROADOFFSET = uint32_t{4};
-constexpr auto PAVEMENTOFFSET = uint32_t{9};
+constexpr auto ROADOFFSET = uint32_t{3};
+constexpr auto PAVEMENTOFFSET = uint32_t{8};
 constexpr auto SPAWNPATHSLENGTH = uint32_t{100000};
 constexpr auto REFRESHRATE = uint32_t{100};
 
@@ -54,24 +54,29 @@ void Simulation::setBasePrinters(std::unique_ptr<interface::PointPainter> juncti
     basePrintersSet_ = true;
 }
 
-void Simulation::startSimulation()
+void Simulation::start()
 {
     if(!basePrintersSet_)
     {
         throw std::runtime_error("Base printers not set - program stopped!");
     }
-    if(simulationRefreshTimer_->isActive())
+    if(!simulationRefreshTimer_->isActive())
     {
         simulationRefreshTimer_->start(REFRESHRATE);
     }
 }
 
-void Simulation::stopSimulation()
+void Simulation::stop()
 {
     if(simulationRefreshTimer_->isActive())
     {
         simulationRefreshTimer_->stop();
     }
+}
+
+bool Simulation::isRunning()
+{
+    return simulationRefreshTimer_->isActive();
 }
 
 const std::vector<std::shared_ptr<Junction>> &Simulation::getJunctions() const
@@ -144,8 +149,8 @@ void Simulation::addRoad(const std::shared_ptr<Junction> startJunction,
     auto road = std::make_shared<Road>(pathId_, length, startPoint, endPoint,
         endJunction, roadCondition, speedLimit);
     road->setPainter(painter);
-    startJunction->update();
-    endJunction->update();
+    road->update();
+    startJunction->addOutgoingRoad(road);
     roadConnections_[startJunction->getId()].push_back(road);
 }
 
@@ -160,8 +165,8 @@ void Simulation::addPavement(const std::shared_ptr<Junction> startJunction,
 
     auto pavement = std::make_shared<Path>(pathId_, length, startPoint, endPoint, endJunction);
     pavement->setPainter(painter);
-    startJunction->update();
-    endJunction->update();
+    pavement->update();
+    startJunction->addOutgoingPavement(pavement);
     pavementConnections_[startJunction->getId()].push_back(pavement);
 }
 
@@ -206,13 +211,6 @@ void Simulation::addPedestrian(std::unique_ptr<interface::PointPainter> painter)
 void Simulation::addPedestrian(const uint32_t maxSpeed, std::unique_ptr<interface::PointPainter> painter)
 {
     addPedestrian(std::make_shared<Pedestrian>(spawnPavement_, maxSpeed), std::move(painter));
-}
-
-void Simulation::repaint()
-{
-    auto junction = junctions_.front();
-
-    junction->update();
 }
 
 void Simulation::updateObjects()
@@ -328,14 +326,14 @@ void Simulation::calculatePathPoints(common::Point &startPoint, common::Point &e
 void Simulation::generateBaseSimulation()
 {
     junctionId_++;
-    auto junction = std::make_shared<Junction>(junctionId_, common::Point{20, 20});
+    auto junction = std::make_shared<Junction>(junctionId_, common::Point{200, 200});
     junctions_.push_back(junction);
 
     auto startPointRoad = common::Point{-100, -100};
-    auto endPointRoad = common::Point{20, 20};
+    auto endPointRoad = common::Point{200, 200};
     calculatePathPoints(startPointRoad, endPointRoad, ROADOFFSET, SPAWNPATHSLENGTH);
     auto startPointPavement = common::Point{-100, -100};
-    auto endPointPavement = common::Point{20, 20};
+    auto endPointPavement = common::Point{200, 200};
     calculatePathPoints(startPointPavement, endPointPavement, PAVEMENTOFFSET, SPAWNPATHSLENGTH);
 
     pathId_++;
@@ -381,6 +379,5 @@ void Simulation::addPedestrian(std::shared_ptr<Pedestrian> pedestrian,
     pedestrian->setPainter(std::move(painter));
     pedestrians_.push_back(pedestrian);
 }
-
 
 } // trafficsimulation::model

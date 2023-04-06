@@ -67,7 +67,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    // void resetScene(); not needed for now
+    void resetScene();
     std::unique_ptr<interface::PointPainter> addJunctionPainter();
     std::unique_ptr<interface::PointPainter> addDriverPainter();
     std::unique_ptr<interface::PointPainter> addPedestrianPainter();
@@ -75,6 +75,8 @@ public:
     std::unique_ptr<interface::LinePainter> addPavementPainter();
 
 private:
+    void handleStartStopButtonClick();
+
     Ui::MainWindow *ui_;
     QGraphicsScene *scene_;
     std::unique_ptr<controller::SimulationController> controller_;

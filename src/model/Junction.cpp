@@ -93,12 +93,12 @@ bool Junction::isGreenLight(const uint32_t pathId) const
     return false;
 }
 
-const std::vector<std::shared_ptr<Road> > &Junction::getOutgoingRoads() const
+std::vector<std::shared_ptr<Road>> Junction::getOutgoingRoads() const
 {
     return outgoingRoads_;
 }
 
-const std::vector<std::shared_ptr<Path> > &Junction::getOutgoingPavements() const
+std::vector<std::shared_ptr<Path>> Junction::getOutgoingPavements() const
 {
     return outgoingPavements_;
 }

@@ -38,8 +38,9 @@ public:
     void setBasePrinters(std::unique_ptr<interface::PointPainter> junctionPainter,
         const std::shared_ptr<interface::LinePainter> roadPainter,
         const std::shared_ptr<interface::LinePainter> pavementPainter);
-    void startSimulation();
-    void stopSimulation();
+    void start();
+    void stop();
+    bool isRunning();
 
     const std::vector<std::shared_ptr<Junction>>& getJunctions() const;
     const std::vector<std::shared_ptr<Driver>>& getDrivers() const;
@@ -69,8 +70,6 @@ public:
 
     void addPedestrian(std::unique_ptr<interface::PointPainter> painter);
     void addPedestrian(const uint32_t maxSpeed, std::unique_ptr<interface::PointPainter> painter);
-
-    void repaint();
 
 private:
     void updateObjects();

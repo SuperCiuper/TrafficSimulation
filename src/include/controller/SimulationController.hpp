@@ -24,11 +24,13 @@ public:
     void addDriver();
     void addPedestrian();
 
-    void createSimulation();
     void resetSimulation();
+    void startSimulation();
+    void stopSimulation();
+    bool isSimulationRunning();
 
 private:
-
+    void createSimulation();
     std::vector<view::dialogs::NotConnectedJunction> findNotConnectedJunctions(
         std::map<uint32_t, std::vector<uint32_t>> connectedJunctions);
 

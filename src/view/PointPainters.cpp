@@ -6,8 +6,6 @@
 #include <QGraphicsScene>
 #include <QPainter>
 
-#include <iostream>
-
 namespace trafficsimulation::view
 {
 
@@ -70,8 +68,7 @@ void PointPainter::setPoint(const common::Point point, const bool highlight)
 
 void PointPainter::paint()
 {
-    std::cout << " PointPainter paint " << std::endl;
-    /*scene()->*/update();
+    update();
 }
 
 QRectF PointPainter::boundingRect() const
@@ -89,8 +86,6 @@ JunctionPainter::~JunctionPainter() = default;
 
 void JunctionPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    std::cout << " JunctionPainter paint " << std::endl;
-
     painter->setPen(QPen{Qt::blue, 2, Qt::SolidLine});
     painter->setBrush(QBrush{Qt::green});
     painter->drawEllipse(point_.x - JUNCTIONDIAMETER/2, point_.y - JUNCTIONDIAMETER/2,

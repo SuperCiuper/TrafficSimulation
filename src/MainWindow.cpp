@@ -39,12 +39,24 @@ MainWindow::MainWindow(QWidget *parent)
         this, [this](){ controller_->addDriver(); });
     connect(ui_->addPedestrianButton, &QPushButton::clicked,
         this, [this](){ controller_->addPedestrian(); });
+    connect(ui_->startStopButton, &QPushButton::clicked,
+        this, &MainWindow::handleStartStopButtonClick);
 }
 
 MainWindow::~MainWindow()
 {
     delete scene_;
     delete ui_;
+}
+
+void MainWindow::resetScene()
+{
+    scene_->clear();
+
+    auto line1 = QLineF(scene_->sceneRect().topLeft(), scene_->sceneRect().topRight());
+    auto line2 = QLineF(scene_->sceneRect().topLeft(), scene_->sceneRect().bottomLeft());
+    scene_->addLine(line1);
+    scene_->addLine(line2);
 }
 
 std::unique_ptr<interface::PointPainter> MainWindow::addJunctionPainter()
@@ -80,6 +92,32 @@ std::unique_ptr<interface::LinePainter> MainWindow::addPavementPainter()
     auto painter = new view::PavementPainter{};
     scene_->addItem(painter);
     return std::unique_ptr<interface::LinePainter>(painter);
+}
+
+void MainWindow::handleStartStopButtonClick()
+{
+    std::cout<< " handleClick " << std::endl;
+    if(controller_->isSimulationRunning())
+    {
+        std::cout<< " XD " << std::endl;
+        controller_->stopSimulation();
+        ui_->startStopButton->setText("Start");
+
+        for(const auto& button : {ui_->addJunctionButton, ui_->addPavementButton,
+            ui_->addRoadButton, ui_->addDriverButton, ui_->addPedestrianButton, ui_->resetButton})
+        {
+            button->setEnabled(true);
+        }
+        return;
+    }
+    controller_->startSimulation();
+    ui_->startStopButton->setText("Stop");
+
+    for(const auto& button : {ui_->addJunctionButton, ui_->addPavementButton,
+        ui_->addRoadButton, ui_->addDriverButton, ui_->addPedestrianButton, ui_->resetButton})
+    {
+        button->setEnabled(false);
+    }
 }
 
 } // trafficsimulation
