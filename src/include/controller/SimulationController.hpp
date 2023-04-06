@@ -24,10 +24,10 @@ public:
     void addDriver();
     void addPedestrian();
 
-    void resetSimulation();
-    void startSimulation();
+    bool startSimulation();
     void stopSimulation();
     bool isSimulationRunning();
+    void resetSimulation();
 
 private:
     void createSimulation();

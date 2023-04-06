@@ -68,11 +68,11 @@ public:
     ~MainWindow();
 
     void resetScene();
-    std::unique_ptr<interface::PointPainter> addJunctionPainter();
-    std::unique_ptr<interface::PointPainter> addDriverPainter();
-    std::unique_ptr<interface::PointPainter> addPedestrianPainter();
-    std::unique_ptr<interface::LinePainter> addRoadPainter();
-    std::unique_ptr<interface::LinePainter> addPavementPainter();
+    interface::PointPainter* addJunctionPainter();
+    interface::PointPainter* addDriverPainter();
+    interface::PointPainter* addPedestrianPainter();
+    interface::LinePainter* addRoadPainter();
+    interface::LinePainter* addPavementPainter();
 
 private:
     void handleStartStopButtonClick();

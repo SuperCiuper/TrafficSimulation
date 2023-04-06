@@ -35,10 +35,10 @@ public:
     Simulation();
     ~Simulation();
 
-    void setBasePrinters(std::unique_ptr<interface::PointPainter> junctionPainter,
-        const std::shared_ptr<interface::LinePainter> roadPainter,
-        const std::shared_ptr<interface::LinePainter> pavementPainter);
-    void start();
+    void setBasePrinters(interface::PointPainter* const junctionPainter,
+        interface::LinePainter* const roadPainter,
+        interface::LinePainter* const pavementPainter);
+    std::optional<std::string> start();
     void stop();
     bool isRunning();
 
@@ -48,28 +48,28 @@ public:
     const std::map<uint32_t, std::vector<uint32_t>> getConnectedJunctionsByRoad() const;
     const std::map<uint32_t, std::vector<uint32_t>> getConnectedJunctionsByPavement() const;
 
-    void addJunction(const common::Point position, std::unique_ptr<interface::PointPainter> painter);
+    void addJunction(const common::Point position, interface::PointPainter* const painter);
     void addRoad(const std::shared_ptr<Junction> startJunction,
         const std::shared_ptr<Junction> endJunction, const uint32_t length,
         const RoadCondition roadCondition, const uint32_t speedLimit,
-        const std::shared_ptr<interface::LinePainter> painter);
+        interface::LinePainter* const painter);
     void addPavement(const std::shared_ptr<Junction> startJunction,
         const std::shared_ptr<Junction> endJunction, const uint32_t length,
-        const std::shared_ptr<interface::LinePainter> painter);
+        interface::LinePainter* const painter);
 
-    void addDriver(std::unique_ptr<interface::PointPainter> painter);
+    void addDriver(interface::PointPainter* const painter);
     void addDriver(const uint32_t maxAcceleration, const uint32_t maxDeceleration,
-        std::unique_ptr<interface::PointPainter> painter);
+        interface::PointPainter* const painter);
     void addDriver(const float accelerationRate, const uint32_t minDistanceToVehicleAhead,
         const uint32_t maxSpeedOverLimit, const float roadConditionSpeedModifier,
-        std::unique_ptr<interface::PointPainter> painter);
+        interface::PointPainter* const painter);
     void addDriver(const uint32_t maxAcceleration, const uint32_t maxDeceleration,
         const float accelerationRate, const uint32_t minDistanceToVehicleAhead,
         const uint32_t maxSpeedOverLimit, const float roadConditionSpeedModifier,
-        std::unique_ptr<interface::PointPainter> painter);
+        interface::PointPainter* const painter);
 
-    void addPedestrian(std::unique_ptr<interface::PointPainter> painter);
-    void addPedestrian(const uint32_t maxSpeed, std::unique_ptr<interface::PointPainter> painter);
+    void addPedestrian(interface::PointPainter* const painter);
+    void addPedestrian(const uint32_t maxSpeed, interface::PointPainter* const painter);
 
 private:
     void updateObjects();
@@ -81,9 +81,9 @@ private:
     void generateBaseSimulation();
     std::unique_ptr<Vehicle> generateRandomVehicle() const;
     std::shared_ptr<Driver> generateRandomDriver(std::unique_ptr<Vehicle> vehicle) const;
-    void addDriver(std::shared_ptr<Driver> driver, std::unique_ptr<interface::PointPainter> painter);
+    void addDriver(std::shared_ptr<Driver> driver, interface::PointPainter* const painter);
     void addPedestrian(std::shared_ptr<Pedestrian> pedestrian,
-        std::unique_ptr<interface::PointPainter> painter);
+        interface::PointPainter* const painter);
 
     uint32_t junctionId_;
     uint32_t pathId_;

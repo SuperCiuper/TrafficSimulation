@@ -4,9 +4,14 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    trafficsimulation::MainWindow w;
-    w.show();
+    auto application = new QApplication{argc, argv};
+    auto mainWindow = new trafficsimulation::MainWindow{};
+    mainWindow->show();
 
-    return a.exec();
+    auto result = application->exec();
+
+    delete mainWindow;
+    delete application;
+
+    return result;
 }

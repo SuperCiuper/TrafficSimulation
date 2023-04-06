@@ -51,7 +51,7 @@ Junction::Junction(const uint32_t junctionId, const common::Point position,
     : junctionId_{junctionId}
     , position_ {position}
     , speedLimit_{300}
-    , incomingRoadPathIds_{}
+    , incomingRoadPathIds_{DUMMY_ID}
     , roadWithGreenIterator_{0}
     , roadGreenLight_{true}
     , pavementGreenLight_{true}
@@ -62,7 +62,10 @@ Junction::Junction(const uint32_t junctionId, const common::Point position,
 {
 }
 
-Junction::~Junction() = default;
+Junction::~Junction() //= default;
+{
+    std::cout << "Junction " << junctionId_ << std::endl;
+}
 
 uint32_t Junction::getId() const
 {
@@ -81,6 +84,7 @@ uint32_t Junction::getSpeedLimit() const
 
 bool Junction::isGreenLight(const uint32_t pathId) const
 {
+    std::cout << " Junction::isGreenLight " << pathId << std::endl;
     if (roadGreenLight_ && pathId == incomingRoadPathIds_[roadWithGreenIterator_])
     {
         return true;
@@ -93,32 +97,32 @@ bool Junction::isGreenLight(const uint32_t pathId) const
     return false;
 }
 
-std::vector<std::shared_ptr<Road>> Junction::getOutgoingRoads() const
+std::vector<std::weak_ptr<Road>> Junction::getOutgoingRoads() const
 {
     return outgoingRoads_;
 }
 
-std::vector<std::shared_ptr<Path>> Junction::getOutgoingPavements() const
+std::vector<std::weak_ptr<Path>> Junction::getOutgoingPavements() const
 {
     return outgoingPavements_;
 }
 
-const std::shared_ptr<Road> Junction::getFastestRoad(const uint32_t destinationId)
+std::shared_ptr<Road> Junction::getFastestRoad(const uint32_t destinationId)
 {
     if(std::size(outgoingRoads_) == 1)
     {
-        return outgoingRoads_.front();
+        return outgoingRoads_.front().lock();
     }
-    return fastestRoutes_.at(destinationId).first;
+    return fastestRoutes_.at(destinationId).first.lock();
 }
 
-const std::shared_ptr<Path> Junction::getFastestPavement(const uint32_t destinationId)
+std::shared_ptr<Path> Junction::getFastestPavement(const uint32_t destinationId)
 {
     if(std::size(outgoingPavements_) == 1)
     {
-        return outgoingPavements_.front();
+        return outgoingPavements_.front().lock();
     }
-    return fastestRoutes_.at(destinationId).second;
+    return fastestRoutes_.at(destinationId).second.lock();
 }
 
 void Junction::addIncomingRoadId(const uint32_t roadId)
@@ -129,16 +133,16 @@ void Junction::addIncomingRoadId(const uint32_t roadId)
 
 void Junction::addOutgoingRoad(const std::shared_ptr<Road> newRoad)
 {
-    outgoingRoads_.push_back(newRoad);
+    outgoingRoads_.push_back(std::weak_ptr<Road>{newRoad});
 }
 
 void Junction::addOutgoingPavement(const std::shared_ptr<Path> newPavement)
 {
-    outgoingPavements_.push_back(newPavement);
+    outgoingPavements_.push_back(std::weak_ptr<Path>{newPavement});
 }
 
 void Junction::setFastestRoute(const uint32_t destinationId,
-    const std::pair<std::shared_ptr<Road>, std::shared_ptr<Path> > bestPaths)
+    const std::pair<std::weak_ptr<Road>, std::weak_ptr<Path>> bestPaths)
 {
     fastestRoutes_.emplace(destinationId, bestPaths);
 }
@@ -195,15 +199,14 @@ void Junction::changeLights()
     pavementGreenLight_ = true;
 }
 
-void Junction::setPainter(std::unique_ptr<interface::PointPainter> painter)
+void Junction::setPainter(interface::PointPainter* const painter)
 {
-    painter_ = std::move(painter);
+    painter_ = painter;
     painter_->setPoint(position_);
 }
 
 void Junction::update()
 {
-    std::cout << " junction paint " << std::endl;
     if(painter_ == nullptr)
     {
         // add log

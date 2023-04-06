@@ -35,14 +35,16 @@ common::Point Path::getStartPoint() const
     return startPoint_;
 }
 
-const std::shared_ptr<Junction> Path::getJunction() const
+std::shared_ptr<Junction> Path::getJunction() const
 {
-    return std::shared_ptr<Junction>{endJunction_};
+    return endJunction_;
 }
 
 common::Point Path::calculateNewPosition(uint32_t distanceTravelled) const
 {
     auto partTravelled = static_cast<float>(distanceTravelled) / static_cast<float>(length_);
+
+    std::cout << partTravelled << std::endl;
     auto newPoint = common::Point{};
     newPoint.x = startPoint_.x + (shiftOfStartPoint_.x * partTravelled);
     newPoint.y = startPoint_.y + (shiftOfStartPoint_.y * partTravelled);
@@ -50,7 +52,7 @@ common::Point Path::calculateNewPosition(uint32_t distanceTravelled) const
     return newPoint;
 }
 
-void Path::setPainter(const std::shared_ptr<interface::LinePainter> painter)
+void Path::setPainter(interface::LinePainter* const painter)
 {
     painter_ = painter;
     painter_->setPoints(startPoint_, endPoint_);

@@ -33,6 +33,11 @@ CreatePavementDialog::~CreatePavementDialog()
     delete ui_;
 }
 
+bool CreatePavementDialog::bothDirections() const
+{
+    return ui_->bothDirectionsCheckBox->isChecked();
+}
+
 uint32_t CreatePavementDialog::getStartId() const
 {
     return notConnectedJunctions_[ui_->startJunctionComboBox->currentIndex()].startJunction.junctionId;

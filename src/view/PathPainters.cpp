@@ -15,8 +15,8 @@ constexpr auto SCENEWIDTH = uint32_t{1300};
 constexpr auto SCENEHEIGHT = uint32_t{820};
 
 constexpr auto PATHZVALUE = qreal{0};
-constexpr auto PAVEMENTPENWIDTH = uint32_t{2};
-constexpr auto ROADPENWIDTH = uint32_t{4};
+constexpr auto PAVEMENTPENWIDTH = uint32_t{3};
+constexpr auto ROADPENWIDTH = uint32_t{5};
 
 PathPainter::PathPainter()
     : startPoint_{common::Point{-10, -10}}
@@ -52,7 +52,7 @@ PavementPainter::~PavementPainter() = default;
 
 void PavementPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->setPen(QPen{Qt::gray, PAVEMENTPENWIDTH, Qt::SolidLine});
+    painter->setPen(QPen{Qt::darkGreen, PAVEMENTPENWIDTH, Qt::SolidLine});
     painter->drawLine(startPoint_.x, startPoint_.y, endPoint_.x, endPoint_.y);
 }
 
@@ -65,7 +65,7 @@ RoadPainter::~RoadPainter() = default;
 
 void RoadPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->setPen(QPen{Qt::black, ROADPENWIDTH, Qt::SolidLine});
+    painter->setPen(QPen{Qt::darkGray, ROADPENWIDTH, Qt::SolidLine});
     painter->drawLine(startPoint_.x, startPoint_.y, endPoint_.x, endPoint_.y);
 }
 

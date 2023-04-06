@@ -39,6 +39,11 @@ CreateRoadDialog::~CreateRoadDialog()
     delete ui_;
 }
 
+bool CreateRoadDialog::bothDirections() const
+{
+    return ui_->bothDirectionsCheckBox->isChecked();
+}
+
 uint32_t CreateRoadDialog::getStartId() const
 {
     return notConnectedJunctions_[ui_->startJunctionComboBox->currentIndex()].startJunction.junctionId;

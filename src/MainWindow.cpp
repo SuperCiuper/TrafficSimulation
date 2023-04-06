@@ -41,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent)
         this, [this](){ controller_->addPedestrian(); });
     connect(ui_->startStopButton, &QPushButton::clicked,
         this, &MainWindow::handleStartStopButtonClick);
+    connect(ui_->resetButton, &QPushButton::clicked,
+        this, [this](){ controller_->resetSimulation(); });
 }
 
 MainWindow::~MainWindow()
@@ -59,39 +61,39 @@ void MainWindow::resetScene()
     scene_->addLine(line2);
 }
 
-std::unique_ptr<interface::PointPainter> MainWindow::addJunctionPainter()
+interface::PointPainter* MainWindow::addJunctionPainter()
 {
     auto painter = new view::JunctionPainter{};
     scene_->addItem(painter);
-    return std::unique_ptr<interface::PointPainter>(painter);
+    return painter;
 }
 
-std::unique_ptr<interface::PointPainter> MainWindow::addDriverPainter()
+interface::PointPainter* MainWindow::addDriverPainter()
 {
     auto painter = new view::DriverPainter{};
     scene_->addItem(painter);
-    return std::unique_ptr<interface::PointPainter>(painter);
+    return painter;
 }
 
-std::unique_ptr<interface::PointPainter> MainWindow::addPedestrianPainter()
+interface::PointPainter* MainWindow::addPedestrianPainter()
 {
     auto painter = new view::PedestrianPainter{};
     scene_->addItem(painter);
-    return std::unique_ptr<interface::PointPainter>(painter);
+    return painter;
 }
 
-std::unique_ptr<interface::LinePainter> MainWindow::addRoadPainter()
+interface::LinePainter* MainWindow::addRoadPainter()
 {
     auto painter = new view::RoadPainter{};
     scene_->addItem(painter);
-    return std::unique_ptr<interface::LinePainter>(painter);
+    return painter;
 }
 
-std::unique_ptr<interface::LinePainter> MainWindow::addPavementPainter()
+interface::LinePainter* MainWindow::addPavementPainter()
 {
     auto painter = new view::PavementPainter{};
     scene_->addItem(painter);
-    return std::unique_ptr<interface::LinePainter>(painter);
+    return painter;
 }
 
 void MainWindow::handleStartStopButtonClick()
@@ -110,13 +112,15 @@ void MainWindow::handleStartStopButtonClick()
         }
         return;
     }
-    controller_->startSimulation();
-    ui_->startStopButton->setText("Stop");
-
-    for(const auto& button : {ui_->addJunctionButton, ui_->addPavementButton,
-        ui_->addRoadButton, ui_->addDriverButton, ui_->addPedestrianButton, ui_->resetButton})
+    if(controller_->startSimulation())
     {
-        button->setEnabled(false);
+        ui_->startStopButton->setText("Stop");
+
+        for(const auto& button : {ui_->addJunctionButton, ui_->addPavementButton,
+            ui_->addRoadButton, ui_->addDriverButton, ui_->addPedestrianButton, ui_->resetButton})
+        {
+            button->setEnabled(false);
+        }
     }
 }
 

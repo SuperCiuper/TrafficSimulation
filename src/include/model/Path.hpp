@@ -22,11 +22,11 @@ public:
     uint32_t getPathId() const;
     uint32_t getLength() const;
     common::Point getStartPoint() const;
-    const std::shared_ptr<Junction> getJunction() const;
+    std::shared_ptr<Junction> getJunction() const;
 
     common::Point calculateNewPosition(uint32_t distanceTravelled) const;
 
-    void setPainter(const std::shared_ptr<interface::LinePainter> painter);
+    void setPainter(interface::LinePainter* const painter);
     void update();
 
 private:
@@ -35,9 +35,9 @@ private:
     const common::Point startPoint_;
     const common::Point endPoint_;
     const common::Point shiftOfStartPoint_;
-    const std::weak_ptr<Junction> endJunction_;
+    const std::shared_ptr<Junction> endJunction_;
 
-    std::shared_ptr<interface::LinePainter> painter_;
+    interface::LinePainter* painter_;
 };
 
 } // trafficsimulation::model

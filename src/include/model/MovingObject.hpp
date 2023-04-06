@@ -21,7 +21,7 @@ public:
 
     void setDestination(const uint32_t newDestinationId);
 
-    void setPainter(std::unique_ptr<interface::PointPainter> painter);
+    void setPainter(interface::PointPainter* const painter);
     void update();
 
 protected:
@@ -34,7 +34,7 @@ protected:
     uint32_t distanceTravelled_;
 
 private:
-    std::unique_ptr<interface::PointPainter> painter_;
+    interface::PointPainter* painter_;
 };
 
 } // trafficsimulation::model

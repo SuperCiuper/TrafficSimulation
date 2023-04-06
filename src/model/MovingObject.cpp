@@ -27,9 +27,9 @@ void MovingObject::setDestination(const uint32_t newDestinationId)
     destinationId_ = newDestinationId;
 }
 
-void MovingObject::setPainter(std::unique_ptr<interface::PointPainter> painter)
+void MovingObject::setPainter(interface::PointPainter* const painter)
 {
-    painter_ = std::move(painter);
+    painter_ = painter;
 }
 
 void MovingObject::update()

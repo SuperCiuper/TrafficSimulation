@@ -156,7 +156,7 @@ void Driver::selectNewPath()
     else
     {
         auto roads = junction->getOutgoingRoads();
-        newRoad = roads[std::rand() % std::size(roads)];
+        newRoad = roads[std::rand() % std::size(roads)].lock();
     }
 
     if(newRoad->getStartPoint() == position_)

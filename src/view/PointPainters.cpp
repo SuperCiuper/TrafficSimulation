@@ -16,8 +16,8 @@ constexpr auto JUNCTIONZVALUE = qreal{2};
 constexpr auto DRIVERZVALUE = qreal{3};
 constexpr auto PEDESTRIANZVALUE = qreal{3};
 constexpr auto JUNCTIONDIAMETER = uint32_t{36};
-constexpr auto DRIVERDIAMETER = uint32_t{6};
-constexpr auto PEDESTRIANDIAMETER = uint32_t{4};
+constexpr auto DRIVERDIAMETER = uint32_t{9};
+constexpr auto PEDESTRIANDIAMETER = uint32_t{5};
 
 namespace
 {
@@ -86,8 +86,8 @@ JunctionPainter::~JunctionPainter() = default;
 
 void JunctionPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->setPen(QPen{Qt::blue, 2, Qt::SolidLine});
-    painter->setBrush(QBrush{Qt::green});
+    painter->setPen(QPen{Qt::darkBlue, 2, Qt::SolidLine});
+    painter->setBrush(QBrush{Qt::darkCyan});
     painter->drawEllipse(point_.x - JUNCTIONDIAMETER/2, point_.y - JUNCTIONDIAMETER/2,
         JUNCTIONDIAMETER, JUNCTIONDIAMETER);
 }

@@ -1,6 +1,7 @@
 #include "../include/controller/SimulationController.hpp"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "../include/MainWindow.hpp"
 #include "../include/common/Point.hpp"
@@ -60,6 +61,12 @@ void SimulationController::addPavement()
 
         simulation_->addPavement(*startJunction, *endJunction, dialog.getLength(),
             mainWindow_->addPavementPainter());
+
+        if(dialog.bothDirections())
+        {
+            simulation_->addPavement(*endJunction, *startJunction, dialog.getLength(),
+                mainWindow_->addPavementPainter());
+        }
     }
 }
 
@@ -85,6 +92,13 @@ void SimulationController::addRoad()
         simulation_->addRoad(*startJunction, *endJunction, dialog.getLength(),
             dialog.getRoadCondition(), dialog.getSpeedLimit(),
             mainWindow_->addRoadPainter());
+
+        if(dialog.bothDirections())
+        {
+            simulation_->addRoad(*endJunction, *startJunction, dialog.getLength(),
+                dialog.getRoadCondition(), dialog.getSpeedLimit(),
+                mainWindow_->addRoadPainter());
+        }
     }
 }
 
@@ -131,15 +145,17 @@ void SimulationController::addPedestrian()
     }
 }
 
-void SimulationController::resetSimulation()
+bool SimulationController::startSimulation()
 {
-    simulation_ = nullptr;
-    createSimulation();
-}
-
-void SimulationController::startSimulation()
-{
-    simulation_->start();
+    auto result = simulation_->start();
+    if(result.has_value())
+    {
+        auto msgBox = new QMessageBox{mainWindow_};
+        msgBox->setText(QString::fromStdString(result.value()));
+        msgBox->exec();
+        return false;
+    }
+    return true;
 }
 
 void SimulationController::stopSimulation()
@@ -150,6 +166,13 @@ void SimulationController::stopSimulation()
 bool SimulationController::isSimulationRunning()
 {
     return simulation_->isRunning();
+}
+
+void SimulationController::resetSimulation()
+{
+    simulation_ = nullptr;
+    mainWindow_->resetScene();
+    createSimulation();
 }
 
 void SimulationController::createSimulation()
