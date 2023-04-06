@@ -11,7 +11,7 @@ Road::Road(const uint32_t pathId, const uint32_t length, const common::Point sta
     : Path{pathId, length, startPoint, endPoint, endJunction}
     , roadCondition_{roadCondition}
     , speedLimit_{speedLimit}
-    , lastVehicle_{}
+    , lastVehicle_{nullptr}
 {
 }
 
@@ -27,19 +27,18 @@ uint32_t Road::getSpeedLimit() const
     return speedLimit_;
 }
 
-const std::shared_ptr<Vehicle> Road::getLastVehicle() const
+Vehicle* Road::getLastVehicle() const
 {
-    return std::shared_ptr<Vehicle>{lastVehicle_};
+    return lastVehicle_;
 }
 
-void Road::addVehicle(std::shared_ptr<Vehicle> newLastVehicle)
+void Road::addVehicle(Vehicle* const newLastVehicle)
 {
-    auto lockedVehicle = lastVehicle_.lock();
-    if(lockedVehicle)
+    if(lastVehicle_)
     {
-        lockedVehicle->setVehicleBehind(newLastVehicle);
+        lastVehicle_->setVehicleBehind(newLastVehicle);
     }
-    newLastVehicle->setVehicleAhead(lockedVehicle);
+    newLastVehicle->setVehicleAhead(lastVehicle_);
     lastVehicle_ = newLastVehicle;
 }
 

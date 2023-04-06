@@ -7,8 +7,6 @@
 #include "include/view/PointPainters.hpp"
 #include "include/controller/SimulationController.hpp"
 
-#include <iostream>
-
 namespace trafficsimulation
 {
 
@@ -98,10 +96,8 @@ interface::LinePainter* MainWindow::addPavementPainter()
 
 void MainWindow::handleStartStopButtonClick()
 {
-    std::cout<< " handleClick " << std::endl;
     if(controller_->isSimulationRunning())
     {
-        std::cout<< " XD " << std::endl;
         controller_->stopSimulation();
         ui_->startStopButton->setText("Start");
 

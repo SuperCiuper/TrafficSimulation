@@ -18,9 +18,9 @@ namespace trafficsimulation::model
 
 constexpr auto ROADOFFSET = uint32_t{3};
 constexpr auto PAVEMENTOFFSET = uint32_t{8};
-constexpr auto SPAWNPATHSLENGTH = uint32_t{100000};
+constexpr auto SPAWNPATHSLENGTH = uint32_t{50000};
 constexpr auto REFRESHRATE = uint32_t{100};
-constexpr auto BASESTARTPOINT = common::Point{-100, -100};
+constexpr auto BASESTARTPOINT = common::Point{-50, -50};
 constexpr auto BASEENDPOINT = common::Point{20, 20};
 
 Simulation::Simulation()
@@ -193,13 +193,17 @@ void Simulation::addPavement(const std::shared_ptr<Junction> startJunction,
 
 void Simulation::addDriver(interface::PointPainter* const painter)
 {
-    addDriver(generateRandomDriver(generateRandomVehicle()), std::move(painter));
+    auto vehicle = generateRandomVehicle();
+    spawnRoad_->addVehicle(vehicle.get());
+    addDriver(generateRandomDriver(std::move(vehicle)), std::move(painter));
 }
 
 void Simulation::addDriver(const uint32_t maxAcceleration, const uint32_t maxDeceleration,
     interface::PointPainter* const painter)
 {
-    addDriver(generateRandomDriver(std::make_unique<Vehicle>(maxAcceleration, maxDeceleration)),
+    auto vehicle = std::make_unique<Vehicle>(maxAcceleration, maxDeceleration);
+    spawnRoad_->addVehicle(vehicle.get());
+    addDriver(generateRandomDriver(std::move(vehicle)),
         std::move(painter));
 }
 
@@ -207,8 +211,10 @@ void Simulation::addDriver(const float accelerationRate,
     const uint32_t minDistanceToVehicleAhead, const uint32_t maxSpeedOverLimit,
     const float roadConditionSpeedModifier, interface::PointPainter* const painter)
 {
-    addDriver(std::make_shared<Driver>(spawnRoad_, generateRandomVehicle(),
-        accelerationRate, minDistanceToVehicleAhead, maxSpeedOverLimit, roadConditionSpeedModifier),
+    auto vehicle = generateRandomVehicle();
+    spawnRoad_->addVehicle(vehicle.get());
+    addDriver(std::make_shared<Driver>(spawnRoad_, std::move(vehicle), accelerationRate,
+        minDistanceToVehicleAhead, maxSpeedOverLimit, roadConditionSpeedModifier),
         std::move(painter));
 }
 
@@ -217,15 +223,16 @@ void Simulation::addDriver(const uint32_t maxAcceleration, const uint32_t maxDec
     const uint32_t maxSpeedOverLimit, const float roadConditionSpeedModifier,
     interface::PointPainter* const painter)
 {
-    addDriver(std::make_shared<Driver>(spawnRoad_,
-        std::make_unique<Vehicle>(maxAcceleration, maxDeceleration),
-        accelerationRate, minDistanceToVehicleAhead, maxSpeedOverLimit, roadConditionSpeedModifier),
+    auto vehicle = std::make_unique<Vehicle>(maxAcceleration, maxDeceleration);
+    spawnRoad_->addVehicle(vehicle.get());
+    addDriver(std::make_shared<Driver>(spawnRoad_, std::move(vehicle), accelerationRate,
+        minDistanceToVehicleAhead, maxSpeedOverLimit, roadConditionSpeedModifier),
         std::move(painter));
 }
 
 void Simulation::addPedestrian(interface::PointPainter* const painter)
 {
-    auto maxSpeed = static_cast<uint32_t>(std::rand() % 901 + 300); /* 300 - 12000 */
+    auto maxSpeed = static_cast<uint32_t>(std::rand() % 91 + 30); /* 30 - 120 */
     addPedestrian(std::make_shared<Pedestrian>(spawnPavement_, maxSpeed), std::move(painter));
 }
 
@@ -361,7 +368,7 @@ void Simulation::generateBaseSimulation()
 
     pathId_++;
     spawnRoad_ = std::make_shared<Road>(pathId_, SPAWNPATHSLENGTH, startPointRoad,
-        endPointRoad, junction, RoadCondition::NoPotHoles, 70);
+        endPointRoad, junction, RoadCondition::NoPotHoles, 700);
 
     pathId_++;
     spawnPavement_ = std::make_shared<Path>(pathId_, SPAWNPATHSLENGTH, startPointPavement,
@@ -392,14 +399,14 @@ std::shared_ptr<Driver> Simulation::generateRandomDriver(std::unique_ptr<Vehicle
 void Simulation::addDriver(std::shared_ptr<Driver> driver,
     interface::PointPainter* const painter)
 {
-    driver->setPainter(std::move(painter));
+    driver->setPainter(painter);
     drivers_.push_back(driver);
 }
 
 void Simulation::addPedestrian(std::shared_ptr<Pedestrian> pedestrian,
     interface::PointPainter* const painter)
 {
-    pedestrian->setPainter(std::move(painter));
+    pedestrian->setPainter(painter);
     pedestrians_.push_back(pedestrian);
 }
 

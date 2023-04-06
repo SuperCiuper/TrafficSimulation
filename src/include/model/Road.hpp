@@ -19,13 +19,13 @@ public:
 
     RoadCondition getRoadCondition() const;
     uint32_t getSpeedLimit() const;
-    const std::shared_ptr<Vehicle> getLastVehicle() const;
-    void addVehicle(std::shared_ptr<Vehicle> newLastVehicle);
+    Vehicle* getLastVehicle() const;
+    void addVehicle(Vehicle* const newLastVehicle);
 
 private:
     const RoadCondition roadCondition_;
     const uint32_t speedLimit_;
-    std::weak_ptr<Vehicle> lastVehicle_;
+    Vehicle* lastVehicle_;
 };
 
 } // trafficsimulation::model

@@ -24,7 +24,7 @@ private:
     void selectNewPath();
 
     std::shared_ptr<Path> pavement_;
-    const uint32_t maxSpeed_; /* 300 - 12000 */
+    const uint32_t maxSpeed_; /* 30 - 120 */
 };
 
 } // trafficsimulation::model

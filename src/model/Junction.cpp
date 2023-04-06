@@ -9,12 +9,10 @@
 #include "../include/model/Path.hpp"
 #include "../include/model/Road.hpp"
 
-#include <iostream>
-
 namespace trafficsimulation::model
 {
 
-constexpr uint32_t ALL_RED_LIGHTS_TIME = 1000;
+constexpr uint32_t ALLREDLIGHTSTIME = 4000;
 constexpr uint32_t DUMMY_ID = 0xFFFF;
 // usual Vehicle will drive through Junction in 100 ticks - 10 sec
 constexpr uint32_t TEMPORARY_PATH_LENGTH = 20000;
@@ -39,7 +37,7 @@ Junction::Junction(const uint32_t junctionId, const common::Point position)
     connect(redLightTimer, &QTimer::timeout, this, &Junction::changeLights);
     redLightTimer->start(timeout);
 
-    QTimer::singleShot(2000, this, [this, timeout]() {
+    QTimer::singleShot(ALLREDLIGHTSTIME, this, [this, timeout]() {
         auto greenLightTimer = new QTimer();
         connect(greenLightTimer, &QTimer::timeout, this, &Junction::changeLights);
         greenLightTimer->start(timeout);
@@ -62,10 +60,7 @@ Junction::Junction(const uint32_t junctionId, const common::Point position,
 {
 }
 
-Junction::~Junction() //= default;
-{
-    std::cout << "Junction " << junctionId_ << std::endl;
-}
+Junction::~Junction() = default;
 
 uint32_t Junction::getId() const
 {
@@ -84,7 +79,6 @@ uint32_t Junction::getSpeedLimit() const
 
 bool Junction::isGreenLight(const uint32_t pathId) const
 {
-    std::cout << " Junction::isGreenLight " << pathId << std::endl;
     if (roadGreenLight_ && pathId == incomingRoadPathIds_[roadWithGreenIterator_])
     {
         return true;

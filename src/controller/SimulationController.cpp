@@ -99,6 +99,17 @@ void SimulationController::addRoad()
                 dialog.getRoadCondition(), dialog.getSpeedLimit(),
                 mainWindow_->addRoadPainter());
         }
+        if(dialog.createPavement())
+        {
+            simulation_->addPavement(*startJunction, *endJunction, dialog.getLength(),
+                mainWindow_->addPavementPainter());
+
+            if(dialog.bothDirections())
+            {
+                simulation_->addPavement(*endJunction, *startJunction, dialog.getLength(),
+                    mainWindow_->addPavementPainter());
+            }
+        }
     }
 }
 
@@ -109,25 +120,25 @@ void SimulationController::addDriver()
     {
         if(dialog.isVehicleRandomized() && dialog.isDriverRandomized())
         {
-            simulation_->addDriver(mainWindow_->addPedestrianPainter());
+            simulation_->addDriver(mainWindow_->addDriverPainter());
             return;
         }
         if(dialog.isVehicleRandomized())
         {
             simulation_->addDriver(dialog.getAccelerationRate(), dialog.getMinDistanceToVehicle(),
                 dialog.getMaxSpeedOverLimit(), dialog.getRoadConditionSpeedModifier(),
-                mainWindow_->addPedestrianPainter());
+                mainWindow_->addDriverPainter());
             return;
         }
         if(dialog.isDriverRandomized())
         {
             simulation_->addDriver(dialog.getMaxAcceleration(), dialog.getMaxDeceleration(),
-                mainWindow_->addPedestrianPainter());
+                mainWindow_->addDriverPainter());
             return;
         }
         simulation_->addDriver(dialog.getMaxAcceleration(), dialog.getMaxDeceleration(),
             dialog.getAccelerationRate(), dialog.getMinDistanceToVehicle(), dialog.getMaxSpeedOverLimit(),
-            dialog.getRoadConditionSpeedModifier(), mainWindow_->addPedestrianPainter());
+            dialog.getRoadConditionSpeedModifier(), mainWindow_->addDriverPainter());
     }
 }
 

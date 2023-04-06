@@ -33,11 +33,6 @@ CreatePavementDialog::~CreatePavementDialog()
     delete ui_;
 }
 
-bool CreatePavementDialog::bothDirections() const
-{
-    return ui_->bothDirectionsCheckBox->isChecked();
-}
-
 uint32_t CreatePavementDialog::getStartId() const
 {
     return notConnectedJunctions_[ui_->startJunctionComboBox->currentIndex()].startJunction.junctionId;
@@ -52,6 +47,11 @@ uint32_t CreatePavementDialog::getEndId() const
 uint32_t CreatePavementDialog::getLength() const
 {
     return static_cast<uint32_t>(ui_->lengthSpinBox->value()) * 1000;
+}
+
+bool CreatePavementDialog::bothDirections() const
+{
+    return ui_->bothDirectionsCheckBox->isChecked();
 }
 
 void CreatePavementDialog::handleStartJunctionChange(int startJunctionId)

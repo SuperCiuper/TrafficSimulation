@@ -44,6 +44,11 @@ bool CreateRoadDialog::bothDirections() const
     return ui_->bothDirectionsCheckBox->isChecked();
 }
 
+bool CreateRoadDialog::createPavement() const
+{
+    return ui_->createCorrespondingPavementCheckBox->isChecked();
+}
+
 uint32_t CreateRoadDialog::getStartId() const
 {
     return notConnectedJunctions_[ui_->startJunctionComboBox->currentIndex()].startJunction.junctionId;

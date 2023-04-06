@@ -20,13 +20,14 @@ public:
         QWidget *parent);
     ~CreateRoadDialog();
 
-    bool bothDirections() const;
-
     uint32_t getStartId() const;
     uint32_t getEndId() const;
     uint32_t getLength() const;
     model::RoadCondition getRoadCondition() const;
     uint32_t getSpeedLimit() const;
+
+    bool bothDirections() const;
+    bool createPavement() const;
 
 private:
     void handleStartJunctionChange(int startJunctionId);

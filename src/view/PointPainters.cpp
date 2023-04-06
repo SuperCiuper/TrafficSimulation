@@ -16,8 +16,8 @@ constexpr auto JUNCTIONZVALUE = qreal{2};
 constexpr auto DRIVERZVALUE = qreal{3};
 constexpr auto PEDESTRIANZVALUE = qreal{3};
 constexpr auto JUNCTIONDIAMETER = uint32_t{36};
-constexpr auto DRIVERDIAMETER = uint32_t{9};
-constexpr auto PEDESTRIANDIAMETER = uint32_t{5};
+constexpr auto DRIVERDIAMETER = uint32_t{10};
+constexpr auto PEDESTRIANDIAMETER = uint32_t{7};
 
 namespace
 {

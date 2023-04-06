@@ -19,11 +19,11 @@ public:
         QWidget *parent);
     ~CreatePavementDialog();
 
-    bool bothDirections() const;
-
     uint32_t getStartId() const;
     uint32_t getEndId() const;
     uint32_t getLength() const;
+
+    bool bothDirections() const;
 
 private:
     void handleStartJunctionChange(int startJunctionId);

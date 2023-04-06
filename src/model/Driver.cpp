@@ -8,6 +8,8 @@
 #include "../include/model/Road.hpp"
 #include "../include/model/Vehicle.hpp"
 
+#include <iostream>
+
 namespace trafficsimulation::model
 {
 
@@ -28,19 +30,30 @@ Driver::~Driver() = default;
 
 void Driver::move()
 {
+    std::cout << " move1 " << distanceTravelled_ << std::endl;
     calculateNewSpeed();
     auto step = vehicle_->speed_;
+    std::cout << " move2 " << step << std::endl;
 
     doStep(step);
+    std::cout << " move3 " << step << std::endl;
+
     position_ = road_->calculateNewPosition(distanceTravelled_);
 }
 
 void Driver::calculateNewSpeed()
 {
-    if(!vehicle_->vehicleAhead_.expired())
+    if(vehicle_->vehicleAhead_ == nullptr)
     {
+        std::cout << " calculateNewSpeed junction " << std::endl;
         auto distanceToJunction = road_->getLength() - distanceTravelled_;
         auto speedDeterminer = vehicle_->speed_ * vehicle_->speed_ / vehicle_->maxDeceleration_;
+
+        if(vehicle_->speed_ == 0 && distanceToJunction != 0)
+        {
+            accelerate();
+            vehicle_->speed_ = std::min(vehicle_->speed_, distanceToJunction);
+        }
 
         if(distanceToJunction > speedDeterminer * 4)
         {
@@ -49,6 +62,7 @@ void Driver::calculateNewSpeed()
         }
         if(road_->getJunction()->isGreenLight(road_->getPathId()))
         {
+            std::cout << " greenLight " << std::endl;
             if(vehicle_->speed_ < road_->getJunction()->getSpeedLimit())
             {
                 accelerate();
@@ -66,18 +80,19 @@ void Driver::calculateNewSpeed()
         }
         return;
     }
-    auto distanceToVehicle = vehicle_->vehicleAhead_.lock()->distanceTravelled_
-        - vehicle_->distanceTravelled_ - minDistanceToVehicleAhead_;
+    std::cout << " calculateNewSpeed vehicle " << std::endl;
+    auto distanceToVehicle = vehicle_->vehicleAhead_->distanceTravelled_
+        - vehicle_->distanceTravelled_;
 
-    auto speedDeterminer = (vehicle_->speed_ - vehicle_->vehicleAhead_.lock()->speed_)
+    auto speedDeterminer = (vehicle_->speed_ - vehicle_->vehicleAhead_->speed_)
         * vehicle_->speed_ / vehicle_->maxDeceleration_;
 
-    if(distanceToVehicle > speedDeterminer * 4)
+    if(distanceToVehicle > speedDeterminer * 4 + minDistanceToVehicleAhead_)
     {
         accelerate();
         return;
     }
-    if(distanceToVehicle < speedDeterminer * 3)
+    if(distanceToVehicle < speedDeterminer * 3 + minDistanceToVehicleAhead_)
     {
         decelerate(speedDeterminer * 3 - distanceToVehicle, speedDeterminer);
     }
@@ -85,6 +100,7 @@ void Driver::calculateNewSpeed()
 
 void Driver::accelerate()
 {
+    std::cout << " accelerate " << std::endl;
     auto maxSpeed = road_->getSpeedLimit() + maxSpeedOverLimit_;
 
     switch(road_->getRoadCondition())
@@ -114,8 +130,10 @@ void Driver::accelerate()
 
 void Driver::decelerate(const uint32_t tooCloseDistance, const uint32_t speedDeterminer)
 {
-    vehicle_->speed_ -= (tooCloseDistance * vehicle_->maxDeceleration_ + (speedDeterminer - 1))
-        / speedDeterminer;
+    std::cout << " decelerate " << tooCloseDistance << " " << speedDeterminer << std::endl;
+    vehicle_->speed_ -= std::max(vehicle_->speed_, (tooCloseDistance * vehicle_->maxDeceleration_ + (speedDeterminer - 1))
+        / speedDeterminer);
+
 }
 
 void Driver::doStep(uint32_t step)
@@ -140,9 +158,13 @@ void Driver::doStep(uint32_t step)
 void Driver::selectNewPath()
 {
     distanceTravelled_ = 0;
-    vehicle_->vehicleBehind_.reset();
-    const auto junction = road_->getJunction();
+    if(vehicle_->vehicleBehind_)
+    {
+        vehicle_->vehicleBehind_->vehicleAhead_ = nullptr;
+        vehicle_->vehicleAhead_ = nullptr;
+    }
 
+    const auto junction = road_->getJunction();
     if(destinationId_ == junction->getId())
     {
         destinationId_ = NO_DESTINATION;
@@ -162,10 +184,13 @@ void Driver::selectNewPath()
     if(newRoad->getStartPoint() == position_)
     {
         road_ = newRoad;
-        return;
     }
-    road_ = junction->createTemporaryRoad(
-        road_->calculateNewPosition(road_->getLength()), newRoad);
+    else
+    {
+        road_ = junction->createTemporaryRoad(
+           road_->calculateNewPosition(road_->getLength()), newRoad);
+    }
+    road_->addVehicle(vehicle_.get());
 }
 
 } // trafficsimulation::model
