@@ -28,11 +28,20 @@ MainWindow::MainWindow(QWidget *parent)
     scene_->addLine(line2);
 
     connect(ui_->addJunctionButton, &QPushButton::clicked,
-        this, [this](){ controller_->addJunction(); });
+        this, [this](){
+            ui_->generateMapButton->setEnabled(false);
+            controller_->addJunction();
+        });
     connect(ui_->addPavementButton, &QPushButton::clicked,
-        this, [this](){ controller_->addPavement(); });
+        this, [this](){
+            ui_->generateMapButton->setEnabled(false);
+            controller_->addPavement();
+        });
     connect(ui_->addRoadButton, &QPushButton::clicked,
-        this, [this](){ controller_->addRoad(); });
+        this, [this](){
+            ui_->generateMapButton->setEnabled(false);
+            controller_->addRoad();
+        });
     connect(ui_->addDriverButton, &QPushButton::clicked,
         this, [this](){ controller_->addDriver(); });
     connect(ui_->addPedestrianButton, &QPushButton::clicked,
@@ -40,7 +49,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui_->startStopButton, &QPushButton::clicked,
         this, &MainWindow::handleStartStopButtonClick);
     connect(ui_->resetButton, &QPushButton::clicked,
-        this, [this](){ controller_->resetSimulation(); });
+        this, [this](){
+            ui_->generateMapButton->setEnabled(true);
+            controller_->resetSimulation();
+        });
+    connect(ui_->generateMapButton, &QPushButton::clicked,
+        this, [this](){
+            ui_->generateMapButton->setEnabled(false);
+            controller_->generateBasicMap();
+        });
+    connect(ui_->selectDestinationPushButton, &QPushButton::clicked,
+        this, [this](){ controller_->setDestination(); });
 }
 
 MainWindow::~MainWindow()
@@ -57,6 +76,28 @@ void MainWindow::resetScene()
     auto line2 = QLineF(scene_->sceneRect().topLeft(), scene_->sceneRect().bottomLeft());
     scene_->addLine(line1);
     scene_->addLine(line2);
+}
+
+void MainWindow::setDestinations(const std::vector<view::dialogs::Junction> destinationJunctions)
+{
+    destinationJunctions_ = destinationJunctions;
+
+    for(const auto& destinationJunctions : destinationJunctions_)
+    {
+        auto text = QString{};
+        text.append("Position:  X: ").append(QString::number(destinationJunctions.position.x))
+            .append(", Y: ").append(QString::number(destinationJunctions.position.y));
+
+        ui_->selectDestinationComboBox->addItem(text);
+    }
+    ui_->selectDestinationComboBox->setCurrentIndex(0);
+    ui_->selectDestinationPushButton->setEnabled(true);
+    ui_->selectDestinationComboBox->setEnabled(true);
+}
+
+uint32_t MainWindow::getDestination() const
+{
+    return destinationJunctions_[ui_->selectDestinationComboBox->currentIndex()].junctionId;
 }
 
 interface::PointPainter* MainWindow::addJunctionPainter()
@@ -106,6 +147,8 @@ void MainWindow::handleStartStopButtonClick()
         {
             button->setEnabled(true);
         }
+        ui_->selectDestinationPushButton->setEnabled(false);
+        ui_->selectDestinationComboBox->setEnabled(false);
         return;
     }
     if(controller_->startSimulation())

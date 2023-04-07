@@ -7,7 +7,10 @@
 #include "../include/common/Point.hpp"
 #include "../include/interface/PointPainter.hpp"
 #include "../include/interface/LinePainter.hpp"
+#include "../include/model/Driver.hpp"
 #include "../include/model/Junction.hpp"
+#include "../include/model/Pedestrian.hpp"
+#include "../include/model/RoadCondition.hpp"
 #include "../include/model/Simulation.hpp"
 
 #include "../include/view/dialogs/CreateDriverDialog.hpp"
@@ -18,6 +21,20 @@
 
 namespace trafficsimulation::controller
 {
+
+namespace
+{
+
+struct NewRoad
+{
+    uint32_t startJunctionIterator;
+    uint32_t endJunctionIterator;
+    uint32_t lenght;
+    model::RoadCondition roadCondition;
+    uint32_t speedLimit;
+};
+
+}
 
 constexpr auto EDGEOFFSET = uint32_t{20};
 
@@ -156,6 +173,84 @@ void SimulationController::addPedestrian()
     }
 }
 
+void SimulationController::generateBasicMap()
+{
+    const auto BASICMAPPOINTS = std::vector<common::Point>{{SCENEWIDTH - EDGEOFFSET, EDGEOFFSET},
+        {EDGEOFFSET, SCENEHEIGHT - EDGEOFFSET}, {SCENEWIDTH - EDGEOFFSET, SCENEHEIGHT - EDGEOFFSET},
+        {SCENEWIDTH / 2, SCENEHEIGHT / 2}};
+
+    const auto newRoads = std::vector<NewRoad>{
+        {0, 1, 1000, model::RoadCondition::NoPotHoles, 70},
+        {0, 2, 350, model::RoadCondition::New, 50},
+        {0, 4, 500, model::RoadCondition::Offroad, 50},
+        {1, 3, 2000, model::RoadCondition::SomePotHoles, 70},
+        {1, 4, 1000, model::RoadCondition::New, 90},
+        {2, 3, 500, model::RoadCondition::SomePotHoles, 30},
+        {2, 4, 2000, model::RoadCondition::LotsOfPotHoles, 120}};
+
+    auto msgBoxText = QString{"Added following:\n"
+        "Junctions; 0: [" + QString::number(EDGEOFFSET) + ", " + QString::number(EDGEOFFSET) + "]"};
+
+    for(auto iterator = 0; iterator < std::size(BASICMAPPOINTS); ++iterator)
+    {
+        msgBoxText.append("; ").append(QString::number(iterator + 1)).append(": [")
+            .append(QString::number(BASICMAPPOINTS[iterator].x)).append(", ")
+            .append(QString::number(BASICMAPPOINTS[iterator].y)).append("]");
+    }
+    msgBoxText.append("\n");
+    for(const auto& newRoad : newRoads)
+    {
+        msgBoxText.append("Road between ").append(QString::number(newRoad.startJunctionIterator))
+            .append(" - ").append(QString::number(newRoad.endJunctionIterator))
+            .append("; length: ").append(QString::number(newRoad.lenght))
+            .append("m, road condition: ").append(QString::fromStdString(toString(newRoad.roadCondition)))
+            .append(", speed limit: ").append(QString::number(newRoad.speedLimit)).append("\n");
+    }
+    msgBoxText.append("All roads are 2 both directions and have pavements");
+
+    auto msgBox = new QMessageBox{mainWindow_};
+    msgBox->setText(msgBoxText);
+    msgBox->exec();
+
+    for(const auto point : BASICMAPPOINTS)
+    {
+        simulation_->addJunction(point, mainWindow_->addJunctionPainter());
+    }
+    auto junctions = simulation_->getJunctions();
+
+    for(const auto& newRoad : newRoads)
+    {
+        simulation_->addRoad(junctions[newRoad.startJunctionIterator],
+            junctions[newRoad.endJunctionIterator], newRoad.lenght * 1000, newRoad.roadCondition,
+            newRoad.speedLimit * 10, mainWindow_->addRoadPainter());
+
+        simulation_->addRoad(junctions[newRoad.endJunctionIterator],
+            junctions[newRoad.startJunctionIterator], newRoad.lenght * 1000, newRoad.roadCondition,
+            newRoad.speedLimit * 10, mainWindow_->addRoadPainter());
+
+        simulation_->addPavement(junctions[newRoad.startJunctionIterator],
+            junctions[newRoad.endJunctionIterator], newRoad.lenght * 1000,
+            mainWindow_->addPavementPainter());
+
+        simulation_->addPavement(junctions[newRoad.endJunctionIterator],
+            junctions[newRoad.startJunctionIterator], newRoad.lenght * 1000,
+            mainWindow_->addPavementPainter());
+    }
+}
+
+void SimulationController::setDestination()
+{
+    auto destination = mainWindow_->getDestination();
+    for(const auto& driver : simulation_->getDrivers())
+    {
+        driver->setDestination(destination);
+    }
+    for(const auto& pedestrian : simulation_->getPedestrians())
+    {
+        pedestrian->setDestination(destination);
+    }
+}
+
 bool SimulationController::startSimulation()
 {
     auto result = simulation_->start();
@@ -166,6 +261,12 @@ bool SimulationController::startSimulation()
         msgBox->exec();
         return false;
     }
+    auto junctions = std::vector<view::dialogs::Junction>{};
+    for(const auto& junction : simulation_->getJunctions())
+    {
+        junctions.push_back({junction->getId(), junction->getPosition()});
+    }
+    mainWindow_->setDestinations(junctions);
     return true;
 }
 

@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <queue>
 
 #include "../include/interface/LinePainter.hpp"
 #include "../include/interface/PointPainter.hpp"
@@ -78,6 +79,7 @@ std::optional<std::string> Simulation::start()
     }
     if(!simulationRefreshTimer_->isActive())
     {
+        calculateFastestRoutes();
         simulationRefreshTimer_->start(REFRESHRATE);
         return {};
     }
@@ -271,6 +273,75 @@ void Simulation::updateObjects()
     }
 }
 
+void Simulation::calculateFastestRoutes()
+{
+    for(const auto& junction : junctions_)
+    {
+        const auto& roadToJunctions = calculateConnections(junction, roadConnections_,
+            [](const std::shared_ptr<Road> road){ return road->getLength() / road->getSpeedLimit(); });
+        const auto& pavementToJunctions = calculateConnections<Path>(junction, pavementConnections_,
+            [](const std::shared_ptr<Path> pavement){ return pavement->getLength(); });
+
+        for(const auto& roadToJunction : roadToJunctions)
+        {
+            auto roadRoute = roadToJunction.second;
+            auto pavementRoute = pavementToJunctions.at(roadToJunction.first);
+
+            while(roadRoute.first != junction->getId())
+            {
+                roadRoute = roadToJunctions.at(roadRoute.first);
+            }
+            while(pavementRoute.first != junction->getId())
+            {
+                pavementRoute = pavementToJunctions.at(pavementRoute.first);
+            }
+            junction->setFastestRoute(roadToJunction.first,
+                std::make_pair(roadRoute.second, pavementRoute.second));
+        }
+    }
+
+}
+
+template<class T, typename Functor>
+std::map<uint32_t, std::pair<uint32_t, std::shared_ptr<T>>> Simulation::calculateConnections(
+    std::shared_ptr<Junction> junction, std::map<uint32_t, std::vector<std::shared_ptr<T>>> connections,
+    Functor costCalculator)
+{
+    using connection = std::pair<uint32_t /* cost */, std::pair<uint32_t /* endJunction */,
+        std::pair<uint32_t /* startJunction */, std::shared_ptr<T>>>>;
+
+    auto visited = std::map<uint32_t, bool>{};
+    auto connectionToJunctions = std::map<uint32_t /* endJunction */,
+        std::pair<uint32_t /* startJunction */, std::shared_ptr<T>>>{};
+    auto nextJunction = std::priority_queue<connection, std::vector<connection>,
+        std::greater<connection>>{};
+    nextJunction.push(std::make_pair(0, std::make_pair(junction->getId(),
+        std::make_pair(junction->getId(), nullptr))));
+
+    while (!nextJunction.empty())
+    {
+        auto currentJunctionId = nextJunction.top().second.first;
+
+        if (visited.find(currentJunctionId) == std::cend(visited))
+        {
+            visited[currentJunctionId] = true;
+            if(currentJunctionId != junction->getId())
+            {
+                connectionToJunctions[currentJunctionId] = nextJunction.top().second.second;
+            }
+            for(const auto& path : connections[currentJunctionId])
+            {
+                nextJunction.push(std::make_pair(nextJunction.top().first
+                    + costCalculator(path),
+                    std::make_pair(path->getJunction()->getId(),
+                    std::make_pair(currentJunctionId, path))));
+            }
+        }
+        nextJunction.pop();
+    }
+    return connectionToJunctions;
+}
+
 void Simulation::calculatePathPoints(common::Point &startPoint, common::Point &endPoint,
     const uint32_t offset, const uint32_t length)
 {
@@ -369,6 +440,7 @@ void Simulation::generateBaseSimulation()
     pathId_++;
     spawnRoad_ = std::make_shared<Road>(pathId_, SPAWNPATHSLENGTH, startPointRoad,
         endPointRoad, junction, RoadCondition::NoPotHoles, 700);
+    junction->addIncomingRoadId(pathId_);
 
     pathId_++;
     spawnPavement_ = std::make_shared<Path>(pathId_, SPAWNPATHSLENGTH, startPointPavement,

@@ -57,7 +57,7 @@
       <x>1350</x>
       <y>310</y>
       <width>151</width>
-      <height>211</height>
+      <height>261</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalButtons">
@@ -101,6 +101,13 @@
       </layout>
      </item>
      <item>
+      <widget class="QPushButton" name="generateMapButton">
+       <property name="text">
+        <string>Generate basic map</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="startStopButton">
        <property name="text">
         <string>Start</string>
@@ -111,6 +118,54 @@
       <widget class="QPushButton" name="resetButton">
        <property name="text">
         <string>Reset simulation</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>1350</x>
+      <y>170</y>
+      <width>151</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="selectDestinationLayout">
+     <item>
+      <widget class="QLabel" name="selectDestinationLabel">
+       <property name="text">
+        <string>Select junction for all drivers and pedestrians to go to</string>
+       </property>
+       <property name="textFormat">
+        <enum>Qt::AutoText</enum>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="selectDestinationComboBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="selectDestinationPushButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Set destination</string>
        </property>
       </widget>
      </item>

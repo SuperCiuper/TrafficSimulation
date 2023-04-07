@@ -24,6 +24,9 @@ public:
     void addDriver();
     void addPedestrian();
 
+    void generateBasicMap();
+    void setDestination();
+
     bool startSimulation();
     void stopSimulation();
     bool isSimulationRunning();

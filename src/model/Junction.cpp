@@ -12,7 +12,8 @@
 namespace trafficsimulation::model
 {
 
-constexpr uint32_t ALLREDLIGHTSTIME = 4000;
+constexpr uint32_t PEDESTRIANREDLIGHTTIME = 18000;
+constexpr uint32_t DRIVERREDLIGHTTIME = 6000;
 constexpr uint32_t DUMMY_ID = 0xFFFF;
 // usual Vehicle will drive through Junction in 100 ticks - 10 sec
 constexpr uint32_t TEMPORARY_PATH_LENGTH = 20000;
@@ -25,22 +26,33 @@ Junction::Junction(const uint32_t junctionId, const common::Point position)
     , incomingRoadPathIds_{}
     , roadWithGreenIterator_{0}
     , roadGreenLight_{false}
-    , pavementGreenLight_{true}
-    , wasLastGreenLightRoad_{false}
+    , pavementGreenLight_{false}
+    , wasLastGreenLightRoad_{true}
     , outgoingRoads_{}
     , outgoingPavements_{}
     , fastestRoutes_{}
 {
-    auto timeout = std::rand() % 12000 + 24000; /* timeout of 24 - 36 sec */
+    auto timeout = std::rand() * std::rand() % 12001 + 24000; /* timeout of 24 - 36 sec */
+    auto pedestrianGreenLightTimer = new QTimer();
+    connect(pedestrianGreenLightTimer, &QTimer::timeout, this, &Junction::changeLights);
+    pedestrianGreenLightTimer->start(timeout * 2);
 
-    auto redLightTimer = new QTimer();
-    connect(redLightTimer, &QTimer::timeout, this, &Junction::changeLights);
-    redLightTimer->start(timeout);
+    QTimer::singleShot(timeout - PEDESTRIANREDLIGHTTIME, this, [this, timeout]() {
+        auto pedestrianRedLightTimer = new QTimer();
+        connect(pedestrianRedLightTimer, &QTimer::timeout, this, &Junction::changeLights);
+        pedestrianRedLightTimer->start(timeout * 2);
+    });
 
-    QTimer::singleShot(ALLREDLIGHTSTIME, this, [this, timeout]() {
-        auto greenLightTimer = new QTimer();
-        connect(greenLightTimer, &QTimer::timeout, this, &Junction::changeLights);
-        greenLightTimer->start(timeout);
+    QTimer::singleShot(timeout, this, [this, timeout]() {
+        auto driverGreenLightTimer = new QTimer();
+        connect(driverGreenLightTimer, &QTimer::timeout, this, &Junction::changeLights);
+        driverGreenLightTimer->start(timeout * 2);
+    });
+
+    QTimer::singleShot(timeout * 2 - DRIVERREDLIGHTTIME, this, [this, timeout]() {
+        auto driverRedLightTimer = new QTimer();
+        connect(driverRedLightTimer, &QTimer::timeout, this, &Junction::changeLights);
+        driverRedLightTimer->start(timeout * 2);
     });
 }
 
@@ -122,7 +134,6 @@ std::shared_ptr<Path> Junction::getFastestPavement(const uint32_t destinationId)
 void Junction::addIncomingRoadId(const uint32_t roadId)
 {
     incomingRoadPathIds_.push_back(roadId);
-    roadWithGreenIterator_ = roadId;
 }
 
 void Junction::addOutgoingRoad(const std::shared_ptr<Road> newRoad)
@@ -178,17 +189,13 @@ void Junction::changeLights()
     }
     if (!wasLastGreenLightRoad_)
     {
-        const auto lenght = std::size(incomingRoadPathIds_);
-        if(lenght)
+        roadWithGreenIterator_++;
+        if(std::size(incomingRoadPathIds_) == roadWithGreenIterator_)
         {
-            roadWithGreenIterator_++;
-            if(lenght == roadWithGreenIterator_)
-            {
-                roadWithGreenIterator_ = 0;
-            }
-            roadGreenLight_ = true;
-            return;
+            roadWithGreenIterator_ = 0;
         }
+        roadGreenLight_ = true;
+        return;
     }
     pavementGreenLight_ = true;
 }

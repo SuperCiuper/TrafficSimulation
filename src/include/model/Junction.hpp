@@ -83,6 +83,7 @@ private:
     bool roadGreenLight_;
     bool pavementGreenLight_;
     bool wasLastGreenLightRoad_;
+
     std::vector<std::weak_ptr<Road>> outgoingRoads_;
     std::vector<std::weak_ptr<Path>> outgoingPavements_;
     std::map<uint32_t /* destinationId */, std::pair<std::weak_ptr<Road>, std::weak_ptr<Path>>> fastestRoutes_;

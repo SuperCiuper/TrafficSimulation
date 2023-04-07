@@ -19,8 +19,8 @@ public:
 
     RoadCondition getRoadCondition() const;
     uint32_t getSpeedLimit() const;
-    Vehicle* getLastVehicle() const;
     void addVehicle(Vehicle* const newLastVehicle);
+    void removeVehicle(Vehicle* const removedVehicle);
 
 private:
     const RoadCondition roadCondition_;

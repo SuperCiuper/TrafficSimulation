@@ -17,7 +17,6 @@ class MovingObject
 {
 public:
     virtual ~MovingObject();
-    uint32_t getDestination() const;
 
     void setDestination(const uint32_t newDestinationId);
 

@@ -27,19 +27,22 @@ uint32_t Road::getSpeedLimit() const
     return speedLimit_;
 }
 
-Vehicle* Road::getLastVehicle() const
-{
-    return lastVehicle_;
-}
-
 void Road::addVehicle(Vehicle* const newLastVehicle)
 {
-    if(lastVehicle_)
+    if(lastVehicle_ != nullptr)
     {
         lastVehicle_->setVehicleBehind(newLastVehicle);
     }
     newLastVehicle->setVehicleAhead(lastVehicle_);
     lastVehicle_ = newLastVehicle;
+}
+
+void Road::removeVehicle(Vehicle* const removedVehicle)
+{
+    if(lastVehicle_ == removedVehicle)
+    {
+        lastVehicle_ = nullptr;
+    }
 }
 
 } // trafficsimulation::model

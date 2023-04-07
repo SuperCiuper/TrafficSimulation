@@ -75,6 +75,12 @@ private:
     void updateObjects();
 
     void calculateFastestRoutes();
+
+    template<class T, typename Functor>
+    std::map<uint32_t /* endJunction */, std::pair<uint32_t /* startJunction */,
+        std::shared_ptr<T>>> calculateConnections(std::shared_ptr<Junction> junction,
+        std::map<uint32_t, std::vector<std::shared_ptr<T>>> connections,
+        Functor costCalculator);
     void calculatePathPoints(common::Point& startPoint, common::Point& endPoint,
         const uint32_t offset, const uint32_t length);
 

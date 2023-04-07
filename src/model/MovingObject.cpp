@@ -17,11 +17,6 @@ MovingObject::MovingObject()
 
 MovingObject::~MovingObject() = default;
 
-uint32_t MovingObject::getDestination() const
-{
-    return destinationId_;
-}
-
 void MovingObject::setDestination(const uint32_t newDestinationId)
 {
     destinationId_ = newDestinationId;

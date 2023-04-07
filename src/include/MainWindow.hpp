@@ -6,10 +6,7 @@
 #include <QMainWindow>
 #include <QEvent>
 
-#include <iostream>
-
-#include <QMetaEnum>
-#include <QDebug>
+#include "view/dialogs/NotConnectedJunction.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -37,22 +34,8 @@ class GraphicsViewFilter : public QObject
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override {
-//        int eventEnumIndex = QEvent::staticMetaObject.indexOfEnumerator("Type");
-//        auto str = qDebug();
-//        str << "QEvent";
-//        if (event)
-//        {
-//            QString name = QEvent::staticMetaObject.enumerator(eventEnumIndex).valueToKey(event->type());
-//            if (!name.isEmpty()) str << name;
-//            else str << event->type();
-//           }
-//        else
-//        {
-//            str << (void*)event;
-//        }
         if(event->type() == QEvent::WindowActivate || event->type() == QEvent::WindowDeactivate)
         {
-//            str << "NOPE";
             return true;
         }
         return QObject::eventFilter(obj, event);
@@ -68,6 +51,9 @@ public:
     ~MainWindow();
 
     void resetScene();
+    void setDestinations(const std::vector<view::dialogs::Junction> destinationJunctions);
+    uint32_t getDestination() const;
+
     interface::PointPainter* addJunctionPainter();
     interface::PointPainter* addDriverPainter();
     interface::PointPainter* addPedestrianPainter();
@@ -80,6 +66,7 @@ private:
     Ui::MainWindow *ui_;
     QGraphicsScene *scene_;
     std::unique_ptr<controller::SimulationController> controller_;
+    std::vector<view::dialogs::Junction> destinationJunctions_;
 };
 
 } // trafficsimulation::view
