@@ -1,5 +1,7 @@
 #include "../include/controller/SimulationController.hpp"
 
+#include <map>
+
 #include <QMessageBox>
 #include <QString>
 
@@ -49,7 +51,7 @@ SimulationController::~SimulationController() = default;
 
 void SimulationController::addJunction()
 {
-    auto dialog = view::dialogs::CreateJunctionDialog{EDGEOFFSET, SCENEWIDTH + EDGEOFFSET,
+    auto dialog = view::dialogs::CreateJunctionDialog{EDGEOFFSET, SCENEWIDTH - EDGEOFFSET,
         SCENEHEIGHT - EDGEOFFSET, mainWindow_};
     if(dialog.exec() == QDialog::Accepted)
     {
@@ -79,10 +81,17 @@ void SimulationController::addPavement()
         simulation_->addPavement(*startJunction, *endJunction, dialog.getLength(),
             mainWindow_->addPavementPainter());
 
+
         if(dialog.bothDirections())
         {
-            simulation_->addPavement(*endJunction, *startJunction, dialog.getLength(),
-                mainWindow_->addPavementPainter());
+            const auto connections = simulation_->getConnectedJunctionsByPavement()[(*endJunction)->getId()];
+
+            if(std::find(std::cbegin(connections), std::cend(connections), (*startJunction)->getId())
+                == std::cend(connections))
+            {
+                simulation_->addPavement(*endJunction, *startJunction, dialog.getLength(),
+                    mainWindow_->addPavementPainter());
+            }
         }
     }
 }
@@ -112,19 +121,40 @@ void SimulationController::addRoad()
 
         if(dialog.bothDirections())
         {
-            simulation_->addRoad(*endJunction, *startJunction, dialog.getLength(),
-                dialog.getRoadCondition(), dialog.getSpeedLimit(),
-                mainWindow_->addRoadPainter());
+            const auto connections = simulation_
+                ->getConnectedJunctionsByPavement()[(*endJunction)->getId()];
+
+            if(std::find(std::cbegin(connections), std::cend(connections),
+                (*startJunction)->getId()) == std::cend(connections))
+            {
+                simulation_->addRoad(*endJunction, *startJunction, dialog.getLength(),
+                    dialog.getRoadCondition(), dialog.getSpeedLimit(),
+                    mainWindow_->addRoadPainter());
+            }
         }
         if(dialog.createPavement())
         {
-            simulation_->addPavement(*startJunction, *endJunction, dialog.getLength(),
-                mainWindow_->addPavementPainter());
+            const auto connections = simulation_
+                ->getConnectedJunctionsByPavement()[(*startJunction)->getId()];
+
+            if(std::find(std::cbegin(connections), std::cend(connections),
+                (*endJunction)->getId()) == std::cend(connections))
+            {
+                simulation_->addPavement(*startJunction, *endJunction, dialog.getLength(),
+                    mainWindow_->addPavementPainter());
+            }
 
             if(dialog.bothDirections())
             {
-                simulation_->addPavement(*endJunction, *startJunction, dialog.getLength(),
-                    mainWindow_->addPavementPainter());
+                const auto connectionsBackwards = simulation_
+                    ->getConnectedJunctionsByPavement()[(*endJunction)->getId()];
+
+                if(std::find(std::cbegin(connectionsBackwards), std::cend(connectionsBackwards),
+                    (*startJunction)->getId()) == std::cend(connectionsBackwards))
+                {
+                    simulation_->addPavement(*endJunction, *startJunction, dialog.getLength(),
+                        mainWindow_->addPavementPainter());
+                }
             }
         }
     }
@@ -253,7 +283,7 @@ void SimulationController::setDestination()
 
 bool SimulationController::startSimulation()
 {
-    auto result = simulation_->start();
+    auto result = simulation_->start(mainWindow_->getRefreshTimeout());
     if(result.has_value())
     {
         auto msgBox = new QMessageBox{mainWindow_};

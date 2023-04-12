@@ -15,7 +15,7 @@ constexpr auto SCENEHEIGHT = uint32_t{820};
 constexpr auto JUNCTIONZVALUE = qreal{2};
 constexpr auto DRIVERZVALUE = qreal{3};
 constexpr auto PEDESTRIANZVALUE = qreal{3};
-constexpr auto JUNCTIONDIAMETER = uint32_t{36};
+constexpr auto JUNCTIONDIAMETER = uint32_t{40};
 constexpr auto DRIVERDIAMETER = uint32_t{10};
 constexpr auto PEDESTRIANDIAMETER = uint32_t{7};
 
@@ -54,16 +54,14 @@ PointPainter::PointPainter()
     : interface::PointPainter{}
     , QGraphicsItem{}
     , point_{common::Point{-10, -10}}
-    , highlight_{false}
 {
 }
 
 PointPainter::~PointPainter() = default;
 
-void PointPainter::setPoint(const common::Point point, const bool highlight)
+void PointPainter::setPoint(const common::Point point)
 {
     point_ = point;
-    highlight_ = highlight;
 }
 
 void PointPainter::paint()

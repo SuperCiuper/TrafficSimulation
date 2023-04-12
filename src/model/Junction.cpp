@@ -3,8 +3,6 @@
 #include <algorithm>
 #include <cstdlib>
 
-#include <QTimer>
-
 #include "../include/interface/PointPainter.hpp"
 #include "../include/model/Path.hpp"
 #include "../include/model/Road.hpp"
@@ -12,64 +10,30 @@
 namespace trafficsimulation::model
 {
 
-constexpr uint32_t PEDESTRIANREDLIGHTTIME = 18000;
-constexpr uint32_t DRIVERREDLIGHTTIME = 6000;
+constexpr uint32_t PEDESTRIANREDLIGHTTICKS = 240;
+constexpr uint32_t DRIVERREDLIGHTTICKS = 60;
 constexpr uint32_t DUMMY_ID = 0xFFFF;
 // usual Vehicle will drive through Junction in 100 ticks - 10 sec
 constexpr uint32_t TEMPORARY_PATH_LENGTH = 20000;
+constexpr uint32_t TEMPORARY_PATH_MAX_SPEED_LIMIT = 300;
 constexpr RoadCondition TEMPORARY_ROAD_CONDITION = RoadCondition::SomePotHoles;
 
 Junction::Junction(const uint32_t junctionId, const common::Point position)
     : junctionId_{junctionId}
     , position_ {position}
-    , speedLimit_{300}
-    , incomingRoadPathIds_{}
+    , speedLimit_{TEMPORARY_PATH_MAX_SPEED_LIMIT}
+    , incomingRoads_{}
+    , lightState_{LightState::PedestrianGreenLight}
     , roadWithGreenIterator_{0}
-    , roadGreenLight_{false}
-    , pavementGreenLight_{false}
-    , wasLastGreenLightRoad_{true}
+    , timeoutTicks_{0}
+    , ticksToLightChange_{0}
     , outgoingRoads_{}
     , outgoingPavements_{}
+    , junctionRoads_{}
     , fastestRoutes_{}
 {
-    auto timeout = std::rand() * std::rand() % 12001 + 24000; /* timeout of 24 - 36 sec */
-    auto pedestrianGreenLightTimer = new QTimer();
-    connect(pedestrianGreenLightTimer, &QTimer::timeout, this, &Junction::changeLights);
-    pedestrianGreenLightTimer->start(timeout * 2);
-
-    QTimer::singleShot(timeout - PEDESTRIANREDLIGHTTIME, this, [this, timeout]() {
-        auto pedestrianRedLightTimer = new QTimer();
-        connect(pedestrianRedLightTimer, &QTimer::timeout, this, &Junction::changeLights);
-        pedestrianRedLightTimer->start(timeout * 2);
-    });
-
-    QTimer::singleShot(timeout, this, [this, timeout]() {
-        auto driverGreenLightTimer = new QTimer();
-        connect(driverGreenLightTimer, &QTimer::timeout, this, &Junction::changeLights);
-        driverGreenLightTimer->start(timeout * 2);
-    });
-
-    QTimer::singleShot(timeout * 2 - DRIVERREDLIGHTTIME, this, [this, timeout]() {
-        auto driverRedLightTimer = new QTimer();
-        connect(driverRedLightTimer, &QTimer::timeout, this, &Junction::changeLights);
-        driverRedLightTimer->start(timeout * 2);
-    });
-}
-
-Junction::Junction(const uint32_t junctionId, const common::Point position,
-    const uint32_t pathWithGreenLightId)
-    : junctionId_{junctionId}
-    , position_ {position}
-    , speedLimit_{300}
-    , incomingRoadPathIds_{DUMMY_ID}
-    , roadWithGreenIterator_{0}
-    , roadGreenLight_{true}
-    , pavementGreenLight_{true}
-    , wasLastGreenLightRoad_{false}
-    , outgoingRoads_{}
-    , outgoingPavements_{}
-    , fastestRoutes_{}
-{
+    timeoutTicks_ = std::rand() * std::rand() % 191 + 260; /* of 260 - 450 ticks -> default 20 - 32 sec*/
+    ticksToLightChange_ = timeoutTicks_ - PEDESTRIANREDLIGHTTICKS;
 }
 
 Junction::~Junction() = default;
@@ -91,14 +55,22 @@ uint32_t Junction::getSpeedLimit() const
 
 bool Junction::isGreenLight(const uint32_t pathId) const
 {
-    if (roadGreenLight_ && pathId == incomingRoadPathIds_[roadWithGreenIterator_])
+    /* is either dummy junction or only pedestrians cross it */
+    if (std::size(incomingRoads_) == 0)
     {
         return true;
     }
-    if (std::find(incomingRoadPathIds_.begin(), incomingRoadPathIds_.end(), pathId)
-        == std::cend(incomingRoadPathIds_))
+    if (lightState_ == LightState::PedestrianGreenLight
+         && std::find_if(incomingRoads_.begin(), incomingRoads_.end(),
+            [pathId](const std::weak_ptr<Road> road){ return road.lock()->getPathId() == pathId; })
+            == std::cend(incomingRoads_))
     {
-        return pavementGreenLight_;
+        return true;
+    }
+    if (lightState_ == LightState::DriverGreenLight
+         && pathId == incomingRoads_[roadWithGreenIterator_].lock()->getPathId())
+    {
+        return true;
     }
     return false;
 }
@@ -131,14 +103,42 @@ std::shared_ptr<Path> Junction::getFastestPavement(const uint32_t destinationId)
     return fastestRoutes_.at(destinationId).second.lock();
 }
 
-void Junction::addIncomingRoadId(const uint32_t roadId)
+void Junction::addIncomingRoad(const std::shared_ptr<Road> newRoad)
 {
-    incomingRoadPathIds_.push_back(roadId);
+    incomingRoads_.push_back(std::weak_ptr<Road>{newRoad});
+
+    for(const auto& outgoingRoad : outgoingRoads_)
+    {
+        auto lockedRoad = outgoingRoad.lock();
+        auto tempJunction = std::make_shared<Junction>(DUMMY_ID,
+            lockedRoad->getStartPoint());
+        tempJunction->addOutgoingRoad(lockedRoad);
+
+        junctionRoads_[newRoad->getPathId()][lockedRoad->getPathId()] =
+            std::make_shared<Road>(DUMMY_ID, TEMPORARY_PATH_LENGTH,
+            newRoad->calculateNewPosition(newRoad->getLength()),
+            lockedRoad->getStartPoint(), tempJunction,
+            TEMPORARY_ROAD_CONDITION, speedLimit_);
+    }
 }
 
 void Junction::addOutgoingRoad(const std::shared_ptr<Road> newRoad)
 {
     outgoingRoads_.push_back(std::weak_ptr<Road>{newRoad});
+
+    for(const auto& incomingRoad : incomingRoads_)
+    {
+        auto lockedRoad = incomingRoad.lock();
+        auto tempJunction = std::make_shared<Junction>(DUMMY_ID,
+            newRoad->getStartPoint());
+        tempJunction->addOutgoingRoad(newRoad);
+
+        junctionRoads_[lockedRoad->getPathId()][newRoad->getPathId()] =
+            std::make_shared<Road>(DUMMY_ID, TEMPORARY_PATH_LENGTH,
+            lockedRoad->calculateNewPosition(lockedRoad->getLength()),
+            newRoad->getStartPoint(), tempJunction,
+            TEMPORARY_ROAD_CONDITION, speedLimit_);
+    }
 }
 
 void Junction::addOutgoingPavement(const std::shared_ptr<Path> newPavement)
@@ -152,22 +152,16 @@ void Junction::setFastestRoute(const uint32_t destinationId,
     fastestRoutes_.emplace(destinationId, bestPaths);
 }
 
-std::shared_ptr<Road> Junction::createTemporaryRoad(const common::Point startPoint,
-    const std::shared_ptr<Road> newRoad) const
+std::shared_ptr<Road> Junction::getJunctionRoad(const uint32_t oldRoadId, const uint32_t newRoadId) const
 {
-    auto tempJunction = std::make_shared<Junction>(DUMMY_ID,
-        newRoad->getStartPoint(), DUMMY_ID);
-    tempJunction->addOutgoingRoad(newRoad);
-    return std::make_shared<Road>(DUMMY_ID, TEMPORARY_PATH_LENGTH,
-        startPoint, newRoad->getStartPoint(), tempJunction,
-        TEMPORARY_ROAD_CONDITION, speedLimit_);
+    return junctionRoads_.at(oldRoadId).at(newRoadId);
 }
 
 std::shared_ptr<Path> Junction::createTemporaryPavement(const common::Point startPoint,
     const std::shared_ptr<Path> newPavement) const
 {
     auto tempJunction = std::make_shared<Junction>(DUMMY_ID,
-        newPavement->getStartPoint(), DUMMY_ID);
+        newPavement->getStartPoint());
     tempJunction->addOutgoingPavement(newPavement);
     return std::make_shared<Path>(DUMMY_ID, TEMPORARY_PATH_LENGTH,
         startPoint, newPavement->getStartPoint(), tempJunction);
@@ -175,29 +169,30 @@ std::shared_ptr<Path> Junction::createTemporaryPavement(const common::Point star
 
 void Junction::changeLights()
 {
-    if (pavementGreenLight_)
+    switch(lightState_)
     {
-        pavementGreenLight_ = false;
-        wasLastGreenLightRoad_ = false;
-        return;
+        case LightState::PedestrianGreenLight:
+            lightState_ = LightState::PedestrianRedLight;
+            ticksToLightChange_ = PEDESTRIANREDLIGHTTICKS;
+            break;
+        case LightState::PedestrianRedLight:
+            roadWithGreenIterator_++;
+            if(std::size(incomingRoads_) == roadWithGreenIterator_)
+            {
+                roadWithGreenIterator_ = 0;
+            }
+            lightState_ = LightState::DriverGreenLight;
+            ticksToLightChange_ = timeoutTicks_ - DRIVERREDLIGHTTICKS;
+            break;
+        case LightState::DriverGreenLight:
+            lightState_ = LightState::DriverRedLight;
+            ticksToLightChange_ = DRIVERREDLIGHTTICKS;
+            break;
+        case LightState::DriverRedLight:
+            lightState_ = LightState::PedestrianGreenLight;
+            ticksToLightChange_ = timeoutTicks_ - PEDESTRIANREDLIGHTTICKS;
+            break;
     }
-    if (roadGreenLight_)
-    {
-        roadGreenLight_ = false;
-        wasLastGreenLightRoad_ = true;
-        return;
-    }
-    if (!wasLastGreenLightRoad_)
-    {
-        roadWithGreenIterator_++;
-        if(std::size(incomingRoadPathIds_) == roadWithGreenIterator_)
-        {
-            roadWithGreenIterator_ = 0;
-        }
-        roadGreenLight_ = true;
-        return;
-    }
-    pavementGreenLight_ = true;
 }
 
 void Junction::setPainter(interface::PointPainter* const painter)
@@ -208,6 +203,12 @@ void Junction::setPainter(interface::PointPainter* const painter)
 
 void Junction::update()
 {
+    ticksToLightChange_--;
+    if(ticksToLightChange_ == 0)
+    {
+        changeLights();
+    }
+
     if(painter_ == nullptr)
     {
         // add log

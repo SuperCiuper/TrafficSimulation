@@ -15,7 +15,7 @@ class PointPainter : public interface::PointPainter, public QGraphicsItem
 public:
     virtual ~PointPainter();
 
-    void setPoint(const common::Point point, const bool highlight = false) override;
+    void setPoint(const common::Point point) override;
     void paint() override;
 
     QRectF boundingRect() const override;
@@ -24,7 +24,6 @@ protected:
     PointPainter();
 
     common::Point point_;
-    bool highlight_;
 };
 
 class JunctionPainter : public PointPainter

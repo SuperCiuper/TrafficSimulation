@@ -38,15 +38,15 @@ public:
     void setBasePrinters(interface::PointPainter* const junctionPainter,
         interface::LinePainter* const roadPainter,
         interface::LinePainter* const pavementPainter);
-    std::optional<std::string> start();
+    std::optional<std::string> start(uint32_t timeout);
     void stop();
     bool isRunning();
 
     const std::vector<std::shared_ptr<Junction>>& getJunctions() const;
     const std::vector<std::shared_ptr<Driver>>& getDrivers() const;
     const std::vector<std::shared_ptr<Pedestrian>>& getPedestrians() const;
-    const std::map<uint32_t, std::vector<uint32_t>> getConnectedJunctionsByRoad() const;
-    const std::map<uint32_t, std::vector<uint32_t>> getConnectedJunctionsByPavement() const;
+    std::map<uint32_t, std::vector<uint32_t>> getConnectedJunctionsByRoad() const;
+    std::map<uint32_t, std::vector<uint32_t>> getConnectedJunctionsByPavement() const;
 
     void addJunction(const common::Point position, interface::PointPainter* const painter);
     void addRoad(const std::shared_ptr<Junction> startJunction,

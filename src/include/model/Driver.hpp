@@ -11,21 +11,74 @@ namespace trafficsimulation::model
 class Road;
 class Vehicle;
 
+/*!
+ * \brief The Driver class
+ *
+ * Inherits and extends MovingObject class.
+ * Calculates driver behavior in simulation.
+ */
 class Driver : public MovingObject
 {
 public:
+    /*!
+     * \brief Constructor
+     * \param std::shared_ptr<Road> road
+     * \param std::unique_ptr<Vehicle> vehicle
+     * \param float accelerationRate
+     * \param uint32_t minDistanceToVehicleAhead
+     * \param uint32_t maxSpeedOverLimit
+     * \param float roadConditionSpeedModifier
+     *
+     * Constructs driver with given parameters
+     */
     Driver(const std::shared_ptr<Road> road, std::unique_ptr<Vehicle> vehicle,
         const float accelerationRate, const uint32_t minDistanceToVehicleAhead,
         const uint32_t maxSpeedOverLimit, const float roadConditionSpeedModifier);
     virtual ~Driver();
 
+    /*!
+     * \brief move
+     *
+     * Overrides MovingObject::move()
+     * Defines new driver distanceTravelled and position
+     */
     void move() override;
 
 private:
+    /*!
+     * \brief calculateNewSpeed
+     *
+     * Calculates new speed of driver considering his distance to closes object in front
+     */
     void calculateNewSpeed();
+    /*!
+     * \brief accelerate
+     *
+     * Accelerates vehicle speed using accelerationRate and road speedLimit
+     */
     void accelerate();
+    /*!
+     * \brief decelerate
+     * \param uint32_t tooCloseDistance
+     * \param uint32_t speedDeterminer
+     *
+     * Decelerates vehicle speed using tooCloseDistance and road speedDeterminer
+     */
     void decelerate(const uint32_t tooCloseDistance, const uint32_t speedDeterminer);
+    /*!
+     * \brief doStep
+     * \param uint32_t step
+     *
+     * Increases distanceTravelled_ of driver and vehicle by step or if junction was
+     * reached enters it or stops at the end of the road
+     */
     void doStep(uint32_t step);
+    /*!
+     * \brief selectNewPath
+     *
+     * Randomly selects new road from outgoing roads from juction that is at the end of
+     * current road or if destination is set selects fastest route
+     */
     void selectNewPath();
 
     std::shared_ptr<Road> road_;

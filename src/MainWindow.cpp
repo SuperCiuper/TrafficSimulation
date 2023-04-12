@@ -22,11 +22,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     scene_->setSceneRect(0, 0, SCENEWIDTH, SCENEHEIGHT);
 
-    auto line1 = QLineF(scene_->sceneRect().topLeft(), scene_->sceneRect().topRight());
-    auto line2 = QLineF(scene_->sceneRect().topLeft(), scene_->sceneRect().bottomLeft());
-    scene_->addLine(line1);
-    scene_->addLine(line2);
-
     connect(ui_->addJunctionButton, &QPushButton::clicked,
         this, [this](){
             ui_->generateMapButton->setEnabled(false);
@@ -71,11 +66,6 @@ MainWindow::~MainWindow()
 void MainWindow::resetScene()
 {
     scene_->clear();
-
-    auto line1 = QLineF(scene_->sceneRect().topLeft(), scene_->sceneRect().topRight());
-    auto line2 = QLineF(scene_->sceneRect().topLeft(), scene_->sceneRect().bottomLeft());
-    scene_->addLine(line1);
-    scene_->addLine(line2);
 }
 
 void MainWindow::setDestinations(const std::vector<view::dialogs::Junction> destinationJunctions)
@@ -98,6 +88,11 @@ void MainWindow::setDestinations(const std::vector<view::dialogs::Junction> dest
 uint32_t MainWindow::getDestination() const
 {
     return destinationJunctions_[ui_->selectDestinationComboBox->currentIndex()].junctionId;
+}
+
+uint32_t MainWindow::getRefreshTimeout() const
+{
+    return ui_->refreshTimeoutSpinBox->value();
 }
 
 interface::PointPainter* MainWindow::addJunctionPainter()
@@ -147,8 +142,11 @@ void MainWindow::handleStartStopButtonClick()
         {
             button->setEnabled(true);
         }
+        ui_->refreshTimeoutSpinBox->setEnabled(true);
         ui_->selectDestinationPushButton->setEnabled(false);
         ui_->selectDestinationComboBox->setEnabled(false);
+        ui_->selectDestinationComboBox->clear();
+
         return;
     }
     if(controller_->startSimulation())
@@ -160,6 +158,7 @@ void MainWindow::handleStartStopButtonClick()
         {
             button->setEnabled(false);
         }
+        ui_->refreshTimeoutSpinBox->setEnabled(false);
     }
 }
 

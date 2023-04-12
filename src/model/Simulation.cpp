@@ -20,7 +20,6 @@ namespace trafficsimulation::model
 constexpr auto ROADOFFSET = uint32_t{3};
 constexpr auto PAVEMENTOFFSET = uint32_t{8};
 constexpr auto SPAWNPATHSLENGTH = uint32_t{50000};
-constexpr auto REFRESHRATE = uint32_t{100};
 constexpr auto BASESTARTPOINT = common::Point{-50, -50};
 constexpr auto BASEENDPOINT = common::Point{20, 20};
 
@@ -57,7 +56,7 @@ void Simulation::setBasePrinters(interface::PointPainter* const junctionPainter,
     basePrintersSet_ = true;
 }
 
-std::optional<std::string> Simulation::start()
+std::optional<std::string> Simulation::start(uint32_t timeout)
 {
     if(!basePrintersSet_)
     {
@@ -80,7 +79,7 @@ std::optional<std::string> Simulation::start()
     if(!simulationRefreshTimer_->isActive())
     {
         calculateFastestRoutes();
-        simulationRefreshTimer_->start(REFRESHRATE);
+        simulationRefreshTimer_->start(timeout);
         return {};
     }
     return "Unknown error";
@@ -114,7 +113,7 @@ const std::vector<std::shared_ptr<Pedestrian> > &Simulation::getPedestrians() co
     return pedestrians_;
 }
 
-const std::map<uint32_t, std::vector<uint32_t>> Simulation::getConnectedJunctionsByRoad() const
+std::map<uint32_t, std::vector<uint32_t>> Simulation::getConnectedJunctionsByRoad() const
 {
     auto connectedJunctions = std::map<uint32_t, std::vector<uint32_t>>{};
 
@@ -130,7 +129,7 @@ const std::map<uint32_t, std::vector<uint32_t>> Simulation::getConnectedJunction
     return connectedJunctions;
 }
 
-const std::map<uint32_t, std::vector<uint32_t>> Simulation::getConnectedJunctionsByPavement() const
+std::map<uint32_t, std::vector<uint32_t>> Simulation::getConnectedJunctionsByPavement() const
 {
     auto connectedJunctions = std::map<uint32_t, std::vector<uint32_t>>{};
 
@@ -152,7 +151,6 @@ void Simulation::addJunction(const common::Point position,
     junctionId_++;
     auto junction = std::make_shared<Junction>(junctionId_, position);
     junction->setPainter(painter);
-    junction->update();
     junctions_.push_back(junction);
     roadConnections_[junctionId_] = {};
     pavementConnections_[junctionId_] = {};
@@ -173,7 +171,7 @@ void Simulation::addRoad(const std::shared_ptr<Junction> startJunction,
     road->setPainter(painter);
     road->update();
     startJunction->addOutgoingRoad(road);
-    endJunction->addIncomingRoadId(pathId_);
+    endJunction->addIncomingRoad(road);
     roadConnections_[startJunction->getId()].push_back(road);
 }
 
@@ -234,7 +232,7 @@ void Simulation::addDriver(const uint32_t maxAcceleration, const uint32_t maxDec
 
 void Simulation::addPedestrian(interface::PointPainter* const painter)
 {
-    auto maxSpeed = static_cast<uint32_t>(std::rand() % 91 + 30); /* 30 - 120 */
+    auto maxSpeed = static_cast<uint32_t>(std::rand() % 81 + 40); /* 40 - 120 */
     addPedestrian(std::make_shared<Pedestrian>(spawnPavement_, maxSpeed), std::move(painter));
 }
 
@@ -440,7 +438,7 @@ void Simulation::generateBaseSimulation()
     pathId_++;
     spawnRoad_ = std::make_shared<Road>(pathId_, SPAWNPATHSLENGTH, startPointRoad,
         endPointRoad, junction, RoadCondition::NoPotHoles, 700);
-    junction->addIncomingRoadId(pathId_);
+    junction->addIncomingRoad(spawnRoad_);
 
     pathId_++;
     spawnPavement_ = std::make_shared<Path>(pathId_, SPAWNPATHSLENGTH, startPointPavement,

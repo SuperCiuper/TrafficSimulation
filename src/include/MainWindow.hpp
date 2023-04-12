@@ -53,6 +53,7 @@ public:
     void resetScene();
     void setDestinations(const std::vector<view::dialogs::Junction> destinationJunctions);
     uint32_t getDestination() const;
+    uint32_t getRefreshTimeout() const;
 
     interface::PointPainter* addJunctionPainter();
     interface::PointPainter* addDriverPainter();

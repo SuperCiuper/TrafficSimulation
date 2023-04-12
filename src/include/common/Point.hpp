@@ -6,6 +6,10 @@
 namespace trafficsimulation::common
 {
 
+/*!
+ * \brief The Point class
+ * Struct with coordinates x, y of a point
+ */
 struct Point
 {
     int16_t x;
