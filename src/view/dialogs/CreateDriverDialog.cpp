@@ -48,7 +48,7 @@ uint32_t CreateDriverDialog::getMinDistanceToVehicle() const
 
 uint32_t CreateDriverDialog::getMaxSpeedOverLimit() const
 {
-    return ui_->maxSpeedOverLimitSpinBox->value();
+    return ui_->maxSpeedOverLimitSpinBox->value() * 10;
 }
 
 float CreateDriverDialog::getRoadConditionSpeedModifier() const

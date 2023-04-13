@@ -457,8 +457,8 @@ std::shared_ptr<Driver> Simulation::generateRandomDriver(std::unique_ptr<Vehicle
 {
     const auto accelerationRate = static_cast<float>(std::rand()) / ( static_cast<float>(RAND_MAX/(0.8)))
         + float{0.2}; /* 0.2 - 1 */
-    const auto minDistanceToVehicleAhead = static_cast<uint32_t>(std::rand() % 8001 + uint32_t{1000}); /* 1000 - 8000 */
-    const auto maxSpeedOverLimit = static_cast<uint32_t>(std::rand() % 31); /* 0 - 30 */
+    const auto minDistanceToVehicleAhead = static_cast<uint32_t>(std::rand() % 8001 + uint32_t{1000}); /* 1000 - 9000 */
+    const auto maxSpeedOverLimit = static_cast<uint32_t>(std::rand() % 301); /* 0 - 300 */
     const auto roadConditionSpeedModifier = static_cast<float>(std::rand())
         / ( static_cast<float>(RAND_MAX/(0.15))); /* 0 - 0.15 */
 

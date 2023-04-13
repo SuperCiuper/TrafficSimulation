@@ -11,6 +11,8 @@
 namespace trafficsimulation::model
 {
 
+constexpr auto SPEED_TO_DISTANCE_MODIFIER = uint32_t{10};
+
 Driver::Driver(const std::shared_ptr<Road> road, std::unique_ptr<Vehicle> vehicle,
     const float accelerationRate, const uint32_t minDistanceToVehicleAhead,
     const uint32_t maxSpeedOverLimit, const float roadConditionSpeedModifier)
@@ -40,7 +42,8 @@ void Driver::calculateNewSpeed()
     if(vehicle_->vehicleAhead_ == nullptr)
     {
         auto distanceToJunction = road_->getLength() - distanceTravelled_;
-        auto speedDeterminer = vehicle_->speed_ * vehicle_->speed_ / vehicle_->maxDeceleration_;
+        auto speedDeterminer = vehicle_->speed_ * vehicle_->speed_ * SPEED_TO_DISTANCE_MODIFIER
+            / vehicle_->maxDeceleration_;
 
         if(vehicle_->speed_ == 0 && distanceToJunction != 0)
         {
@@ -48,7 +51,7 @@ void Driver::calculateNewSpeed()
             vehicle_->speed_ = std::min(vehicle_->speed_, distanceToJunction);
         }
 
-        if(distanceToJunction > speedDeterminer * 3)
+        if(distanceToJunction > speedDeterminer * 2)
         {
             accelerate();
             return;
@@ -66,28 +69,32 @@ void Driver::calculateNewSpeed()
                 return;
             }
         }
-        if(distanceToJunction < speedDeterminer * 2)
+        if(distanceToJunction < speedDeterminer)
         {
-            decelerate(speedDeterminer * 2 - distanceToJunction, speedDeterminer);
+            decelerate(speedDeterminer - distanceToJunction, speedDeterminer);
         }
         return;
     }
     auto distanceToVehicle = vehicle_->vehicleAhead_->distanceTravelled_
         - vehicle_->distanceTravelled_;
 
-    auto speedDeterminer = ((vehicle_->speed_ > vehicle_->vehicleAhead_->speed_)
-        ? (vehicle_->speed_ - vehicle_->vehicleAhead_->speed_) + 1
-        : (vehicle_->vehicleAhead_->speed_ - vehicle_->speed_) + 1
-        ) * vehicle_->speed_ / vehicle_->maxDeceleration_;
-
-    if(distanceToVehicle > speedDeterminer * 4 + minDistanceToVehicleAhead_)
+    if(vehicle_->vehicleAhead_->speed_ > vehicle_->speed_
+       && distanceToVehicle > minDistanceToVehicleAhead_ * 2)
     {
         accelerate();
         return;
     }
-    if(distanceToVehicle < speedDeterminer * 3 + minDistanceToVehicleAhead_)
+    auto speedDeterminer = (vehicle_->speed_ - vehicle_->vehicleAhead_->speed_ + 1)
+         * vehicle_->speed_ * SPEED_TO_DISTANCE_MODIFIER / vehicle_->maxDeceleration_;
+
+    if(distanceToVehicle > speedDeterminer * 3 + minDistanceToVehicleAhead_)
     {
-        decelerate(speedDeterminer * 3 + minDistanceToVehicleAhead_ - distanceToVehicle, speedDeterminer);
+        accelerate();
+        return;
+    }
+    if(distanceToVehicle < speedDeterminer * 2 + minDistanceToVehicleAhead_)
+    {
+        decelerate(speedDeterminer * 2 + minDistanceToVehicleAhead_ - distanceToVehicle, speedDeterminer);
     }
 }
 
@@ -130,7 +137,6 @@ void Driver::decelerate(const uint32_t tooCloseDistance, const uint32_t speedDet
     }
     vehicle_->speed_ -= std::min(vehicle_->speed_, (tooCloseDistance * vehicle_->maxDeceleration_
         + (speedDeterminer - 1)) / speedDeterminer);
-
 }
 
 void Driver::doStep(uint32_t step)

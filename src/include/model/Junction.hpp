@@ -119,18 +119,12 @@ public:
     std::shared_ptr<Path> createTemporaryPavement(const common::Point startPoint,
         const std::shared_ptr<Path> newPavement) const;
 
-    /*!
-     * \brief setPainter
-     * \param interface::PointPainter* painter
-     *
-     * Sets painter
-     */
     void setPainter(interface::PointPainter* const painter);
     /*!
      * \brief update
      *
      * Decreases ticksToLightChange_, if is 0 then changes lights.
-     * If painter is set prints object
+     * If painter is set paints object
      */
     void update();
 
@@ -138,8 +132,8 @@ private:
     /*!
      * \brief changeLights
      *
-     * Changes light and sets ticksToLightChange_ to new value, depends on which light
-     * is turned on
+     * Changes light and sets ticksToLightChange_ to new value, behavior depends on
+     * which light is turned on
      */
     void changeLights();
 

@@ -20,13 +20,13 @@ public:
      * \brief setPoints
      * \param common::Point
      *
-     * Sets point that will be printed
+     * Pure virtual function. Sets point that will be printed
      */
     virtual void setPoint(const common::Point point) = 0;
     /*!
      * \brief paint
      *
-     * Paints point
+     * Pure virtual function. Paints point
      */
     virtual void paint() = 0;
 

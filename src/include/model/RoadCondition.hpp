@@ -6,6 +6,11 @@
 namespace trafficsimulation::model
 {
 
+/*!
+ * \brief The RoadCondition enum
+ *
+ * Possible road conditions, used to calculate max speed that driver can go with on road
+ */
 enum class RoadCondition
 {
     New,

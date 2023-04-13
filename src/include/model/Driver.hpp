@@ -14,8 +14,9 @@ class Vehicle;
 /*!
  * \brief The Driver class
  *
- * Inherits and extends MovingObject class.
- * Calculates driver behavior in simulation.
+ * Inherits and extends MovingObject abstract class.
+ * Calculates driver behavior in simulation. Moves on Road objects.
+ * Vehicle is friend to Driver class.
  */
 class Driver : public MovingObject
 {
@@ -28,23 +29,20 @@ public:
      * \param uint32_t minDistanceToVehicleAhead
      * \param uint32_t maxSpeedOverLimit
      * \param float roadConditionSpeedModifier
-     *
-     * Constructs driver with given parameters
      */
     Driver(const std::shared_ptr<Road> road, std::unique_ptr<Vehicle> vehicle,
         const float accelerationRate, const uint32_t minDistanceToVehicleAhead,
         const uint32_t maxSpeedOverLimit, const float roadConditionSpeedModifier);
     virtual ~Driver();
 
+private:
     /*!
      * \brief move
      *
      * Overrides MovingObject::move()
-     * Defines new driver distanceTravelled and position
+     * Calculates distanceTravelled_ and position_
      */
     void move() override;
-
-private:
     /*!
      * \brief calculateNewSpeed
      *
@@ -69,15 +67,15 @@ private:
      * \brief doStep
      * \param uint32_t step
      *
-     * Increases distanceTravelled_ of driver and vehicle by step or if junction was
-     * reached enters it or stops at the end of the road
+     * Increases distanceTravelled_ of Driver and vehicle_ by step or if Junction was
+     * reached enters it or stops at the end of the road_
      */
     void doStep(uint32_t step);
     /*!
      * \brief selectNewPath
      *
-     * Randomly selects new road from outgoing roads from juction that is at the end of
-     * current road or if destination is set selects fastest route
+     * Randomly selects Road from outgoing roads from Juction that is at the end of
+     * road_ or if destination is set selects fastest route
      */
     void selectNewPath();
 

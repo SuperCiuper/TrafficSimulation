@@ -21,13 +21,13 @@ public:
      * \param common::Point
      * \param common::Point
      *
-     * Sets start and end points of path that will be printed
+     * Pure virtual function. Sets start and end points of path that will be printed
      */
     virtual void setPoints(const common::Point startPoint, const common::Point endPoint) = 0;
     /*!
      * \brief paint
      *
-     * Paints line
+     * Pure virtual function. Paints line
      */
     virtual void paint() = 0;
 

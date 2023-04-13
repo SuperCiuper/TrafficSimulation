@@ -10,8 +10,8 @@
 namespace trafficsimulation::model
 {
 
-constexpr uint32_t PEDESTRIANREDLIGHTTICKS = 240;
-constexpr uint32_t DRIVERREDLIGHTTICKS = 60;
+constexpr uint32_t PEDESTRIAN_RED_LIGHT_TICKS = 240;
+constexpr uint32_t DRIVER_RED_LIGHT_TICKS = 60;
 constexpr uint32_t DUMMY_ID = 0xFFFF;
 // usual Vehicle will drive through Junction in 100 ticks - 10 sec
 constexpr uint32_t TEMPORARY_PATH_LENGTH = 20000;
@@ -33,7 +33,7 @@ Junction::Junction(const uint32_t junctionId, const common::Point position)
     , fastestRoutes_{}
 {
     timeoutTicks_ = std::rand() * std::rand() % 191 + 260; /* of 260 - 450 ticks -> default 20 - 32 sec*/
-    ticksToLightChange_ = timeoutTicks_ - PEDESTRIANREDLIGHTTICKS;
+    ticksToLightChange_ = timeoutTicks_ - PEDESTRIAN_RED_LIGHT_TICKS;
 }
 
 Junction::~Junction() = default;
@@ -173,7 +173,7 @@ void Junction::changeLights()
     {
         case LightState::PedestrianGreenLight:
             lightState_ = LightState::PedestrianRedLight;
-            ticksToLightChange_ = PEDESTRIANREDLIGHTTICKS;
+            ticksToLightChange_ = PEDESTRIAN_RED_LIGHT_TICKS;
             break;
         case LightState::PedestrianRedLight:
             roadWithGreenIterator_++;
@@ -182,15 +182,15 @@ void Junction::changeLights()
                 roadWithGreenIterator_ = 0;
             }
             lightState_ = LightState::DriverGreenLight;
-            ticksToLightChange_ = timeoutTicks_ - DRIVERREDLIGHTTICKS;
+            ticksToLightChange_ = timeoutTicks_ - DRIVER_RED_LIGHT_TICKS;
             break;
         case LightState::DriverGreenLight:
             lightState_ = LightState::DriverRedLight;
-            ticksToLightChange_ = DRIVERREDLIGHTTICKS;
+            ticksToLightChange_ = DRIVER_RED_LIGHT_TICKS;
             break;
         case LightState::DriverRedLight:
             lightState_ = LightState::PedestrianGreenLight;
-            ticksToLightChange_ = timeoutTicks_ - PEDESTRIANREDLIGHTTICKS;
+            ticksToLightChange_ = timeoutTicks_ - PEDESTRIAN_RED_LIGHT_TICKS;
             break;
     }
 }

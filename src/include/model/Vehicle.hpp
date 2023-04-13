@@ -8,9 +8,19 @@ namespace trafficsimulation::model
 
 class Driver;
 
+/*!
+ * \brief The Vehicle class
+ *
+ * Holds pointers to vehicle ahead and behind, is frien of Driver class.
+ */
 class Vehicle
 {
 public:
+    /*!
+     * \brief Constructor
+     * \param uint32_t maxAcceleration
+     * \param uint32_t maxDeceleration
+     */
     Vehicle(const uint32_t maxAcceleration, const uint32_t maxDeceleration);
     ~Vehicle();
 

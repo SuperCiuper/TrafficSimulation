@@ -30,7 +30,6 @@ void MovingObject::setPainter(interface::PointPainter* const painter)
 void MovingObject::update()
 {
     move();
-
     if(painter_ == nullptr)
     {
         // add log

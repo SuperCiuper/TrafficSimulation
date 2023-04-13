@@ -8,6 +8,13 @@ namespace Ui { class CreateDriverDialog; }
 namespace trafficsimulation::view::dialogs
 {
 
+/*!
+ * \brief The CreateDriverDialog class
+ *
+ * Inherits QDialog class.
+ * Creates dialog window with input widgets, other classes (controlers) use it to
+ * collect values to add Driver to simulation
+ */
 class CreateDriverDialog : public QDialog
 {
     Q_OBJECT

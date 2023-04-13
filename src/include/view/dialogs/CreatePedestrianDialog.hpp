@@ -8,6 +8,13 @@ namespace Ui { class CreatePedestrianDialog; }
 namespace trafficsimulation::view::dialogs
 {
 
+/*!
+ * \brief The CreatePedestrianDialog class
+ *
+ * Inherits QDialog class.
+ * Creates dialog window with input widgets, other classes (controlers) use it to
+ * collect values to add Pedestrian to simulation
+ */
 class CreatePedestrianDialog : public QDialog
 {
     Q_OBJECT
