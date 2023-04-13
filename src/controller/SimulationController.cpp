@@ -122,7 +122,7 @@ void SimulationController::addRoad()
         if(dialog.bothDirections())
         {
             const auto connections = simulation_
-                ->getConnectedJunctionsByPavement()[(*endJunction)->getId()];
+                ->getConnectedJunctionsByRoad()[(*endJunction)->getId()];
 
             if(std::find(std::cbegin(connections), std::cend(connections),
                 (*startJunction)->getId()) == std::cend(connections))
